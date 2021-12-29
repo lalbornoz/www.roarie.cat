@@ -19,6 +19,8 @@ function init () {
   build()
   bind()
   clipboard.load_from_location()
+  palette.experimental(true)
+  controls.experimental_palette.update(true)
 }
 function build () {
   canvas.append(canvas_rapper)

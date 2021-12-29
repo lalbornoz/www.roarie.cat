@@ -75,7 +75,12 @@ var palette = (function(){
           brush.bg = lex.fg
           brush.char = lex.char
         }
-        else {
+	else if (lex.char === " " && brush.char !== " ") {
+          brush.fg = lex.bg
+          brush.bg = lex.fg
+          brush.char = lex.char
+	}
+	else {
           brush.fg = lex.bg
           brush.bg = fillColor
 //           brush.char = lex.char

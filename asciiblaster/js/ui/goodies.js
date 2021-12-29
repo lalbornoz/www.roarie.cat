@@ -103,8 +103,6 @@ var goodies = (function(){
 
 // >> sharded glitch brush
 
-// Example: http://asdf.us/z/kksnvs.png 
-
 // Use on a brush:
 
 // lex.bg = t/y/x

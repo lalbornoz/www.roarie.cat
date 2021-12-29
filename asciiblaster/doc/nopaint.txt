@@ -11,7 +11,7 @@ https://www.nopaint.org/
 
 - an automatic drawing tool with a minimal interface: you control it using
 just two buttons.  The No Paint tool provided much entertainment on #sally,
-so during some downtime I added similar functionality to the asdf.us/ascii
+so during some downtime I added similar functionality to the www.roarie.cat/asciiblaster
 tool.  Under the brush, you should see two buttons - to kick it off, click
 'paint' and it will begin drawing.
 

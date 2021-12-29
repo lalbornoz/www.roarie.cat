@@ -1,7 +1,7 @@
 ASCII SHADER TUTORIAL
 =====================
 
-In the asdf.us/ascii shaders, you write a little math function that executes on every
+In the www.roarie.cat/asciiblaster shaders, you write a little math function that executes on every
 pixel on the selected area.  The shaders can affect either the brush, the selected region,
 or the whole canvas.
 
@@ -53,7 +53,7 @@ These functions make it easier to cycle through colors in a way that makes sense
 VARIABLES
 =========
 
-Variables you have at your disposal are similar to the asdf.us/shader tool -
+Variables you have at your disposal are similar to the www.roarie.cat/asciiblaster/shader tool -
 
 - x, y = the coordinates of the pixel
 - mouse.x, mouse.y = the coordinate of the mouse as it hovers over the canvas
@@ -134,23 +134,5 @@ lex.bg = mouse.x + mouse.y
 
 Drawing strokes quickly, or slowly.
 Make sure to make it animate to brush.
-Results could look like this:
-
-http://i.asdf.us/im/f9/1458658781640-ascii-bamboo.png
-
-
-SAMPLE SHADERS
-==============
-
-You can see a list of example shaders here:
-
-http://asdf.us/ascii/doc/shaderz.txt
-
-If you make a cool shader and want to see it on the list, please get in touch!
-You can find me on irc.jollo.org:9999 (ssl) in #sally, making color codes with my friends.
-
-Thanks and have fun!
-
-~ Bamboo, 22 Marzo 2016
 
 

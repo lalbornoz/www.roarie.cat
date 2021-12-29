@@ -1,5 +1,5 @@
-asdf.us/ascii tips
-==================
+www.roarie.cat/asciiblaster tips
+================================
 
 These keyboard commands work in brush mode (square, circle, cross):
 

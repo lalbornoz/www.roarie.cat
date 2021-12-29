@@ -299,11 +299,11 @@ var clipboard = (function () {
   }
   
   function sally_url_convert(url){
-    var png_regex = /^https?:\/\/jollo\.org\/den\/sallies\/([0-9]+)\/([^.]+)\.png$/
+    var png_regex = /^https?:\/\/www\.roarie\.cat\/asciiblaster\/sallies\/([0-9]+)\/([^.]+)\.png$/
     var matches = url.match(png_regex)
     if (!matches) return url
-    return 'http://jollo.org/den/sallies/' + matches[1] + '/raw-' + matches[2] + '?.txt'
-    // txt suffix to force asdf proxy
+    return 'http://www.roarie.cat/asciiblaster/den/sallies/' + matches[1] + '/raw-' + matches[2] + '?.txt'
+    // txt suffix to force www.roarie.cat/asciiblaster proxy
   }
 
   exports.load_from_location = function(){

@@ -1,6 +1,6 @@
 var palette = (function(){
 
-  var palette = new Matrix (32, 2, function(x,y){
+  var palette = new Matrix (34, 2, function(x,y){
     var lex = new Lex (x,y)
     return lex
   })
@@ -13,24 +13,30 @@ var palette = (function(){
   palette.repaint = function(){
     var xw = use_experimental_palette ? 5 : 2
     if (canvas.vertical) {
-      palette.resize( xw, 16 )
+      palette.resize( xw, 18 )
     }
     else {
-      palette.resize( 32, xw )
+      palette.resize( 34, xw )
     }
 
     palette.forEach(function(lex,x,y){
-      if (canvas.vertical) { x=x^y;y=x^y;x=x^y;x*=2 }
-      if (y < 2) {
-        lex.bg = palette_fn(x>>1)
-        lex.fg = palette_fn(x>>1)
-      }
-      else {
-        lex.bg = fillColor
-        lex.fg = palette_fn(x>>1)
+      if (x > 1) {
+	x -= 2
+        if (canvas.vertical) { x=x^y;y=x^y;x=x^y;x*=2 }
+        if (y < 2) {
+          lex.bg = palette_fn(x>>1)
+          lex.fg = palette_fn(x>>1)
+        }
+        else {
+          lex.bg = fillColor
+          lex.fg = palette_fn(x>>1)
+        }
+        lex.opacity = 1
+      } else {
+        lex.bg = lex.fg = 99
+        lex.opacity = 0
       }
       lex.char = palette.chars[y]
-      lex.opacity = 1
       lex.build()
       if (lex.char == "_") lex.char = " "
     })
@@ -39,7 +45,7 @@ var palette = (function(){
   var use_experimental_palette = false
   palette.experimental = function(state){
     use_experimental_palette = typeof state == "boolean" ? state : ! use_experimental_palette
-    use_experimental_palette ? palette.resize(32, 5) : palette.resize(32, 2)
+    use_experimental_palette ? palette.resize(34, 5) : palette.resize(34, 2)
     palette.repaint()
     return use_experimental_palette
   }
@@ -86,6 +92,9 @@ var palette = (function(){
 
       lex.span.addEventListener('contextmenu', function(e){
         e.preventDefault()
+        if (x <= 1) {
+          return
+	}
         fillColor = y ? lex.fg : lex.bg
         palette.repaint()
         brush.fg = lex.fg

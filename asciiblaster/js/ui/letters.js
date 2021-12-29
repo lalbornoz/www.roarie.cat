@@ -19,13 +19,13 @@ var letters = (function(){
   letters.repaint = function(charset){
     letters.charset = charset = charset || last_charset
     last_charset = charset
-    var chars = unicode.block(charset, 32)
+    var chars = unicode.block(charset, 34)
     if (chars[0] != " ") chars.unshift(" ")
     if (canvas.vertical) {
-      letters.resize( Math.ceil( chars.length / 16 ), 16 )
+      letters.resize( Math.ceil( chars.length / 18 ), 18 )
     }
     else {
-      letters.resize( 32, Math.ceil( chars.length / 32 ) )
+      letters.resize( 34, Math.ceil( chars.length / 34 ) )
     }
 
     var i = 0

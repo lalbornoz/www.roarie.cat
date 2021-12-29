@@ -150,7 +150,7 @@ var draw = (function(){
       s = round( s + x-hh )
       t = round( t + y-hh )
       if (s >= 0 && s < canvas.w && t >= 0 && t < canvas.h) {
-        if (lex.opacity === 0 && lex.char === ' ') return;
+        if (lex.opacity === 0 && lex.char === ' ' && lex.bg !== 99 && lex.fg !== 99) return;
         var aa = canvas.aa[t][s]
         undo.save_lex(s, t, aa)
         if (erasing) {

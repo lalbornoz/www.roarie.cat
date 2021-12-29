@@ -47,14 +47,18 @@ Lex.prototype.sanitize = function(){
 var fgOnly = false
 Lex.prototype.mirc = function(){
   var char = this.char || " "
-  if (fgOnly) {
-    return "\x03" + (this.fg&15) + char
-  }
-  if ((this.bg&15) < 10 && ! isNaN(parseInt(char))) {
-    return "\x03" + (this.fg&15) + ",0" + (this.bg&15) + char
-  }
-  else {
-    return "\x03" + (this.fg&15) + "," + (this.bg&15) + char
+  if (this.opacity > 0) {
+    if (fgOnly) {
+      return "\x03" + (this.fg&15) + char
+    }
+    if ((this.bg&15) < 10 && ! isNaN(parseInt(char))) {
+      return "\x03" + (this.fg&15) + ",0" + (this.bg&15) + char
+    }
+    else {
+      return "\x03" + (this.fg&15) + "," + (this.bg&15) + char
+    }
+  } else {
+      return "\x0f" + char
   }
 }
 Lex.prototype.ansi = function(){
@@ -76,7 +80,7 @@ Lex.prototype.stamp = function (lex, brush){
   if (brush.draw_fg) this.fg = lex.fg
   if (brush.draw_bg && lex.opacity > 0) this.bg = lex.bg
   if (brush.draw_char) this.char = lex.char
-  this.opacity = 1
+  this.opacity = lex.opacity
   this.build()
 }
 Lex.prototype.clone = function () {

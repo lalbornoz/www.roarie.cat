@@ -29,7 +29,8 @@ function build () {
   
   controls.circle.focus()
 
-  brush.bg = colors.red
+  brush.bg = brush.fg = 99
+  brush.opacity = 0
   brush.generate()
   brush.build()
 

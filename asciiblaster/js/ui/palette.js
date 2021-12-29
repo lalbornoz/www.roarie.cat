@@ -32,11 +32,12 @@ var palette = (function(){
           lex.fg = palette_fn(x>>1)
         }
         lex.opacity = 1
+        lex.char = palette.chars[y]
       } else {
         lex.bg = lex.fg = 99
         lex.opacity = 0
+        lex.char = " "
       }
-      lex.char = palette.chars[y]
       lex.build()
       if (lex.char == "_") lex.char = " "
     })

@@ -147,24 +147,34 @@ var controls = (function(){
     link.click();
     clipboard.show()
   }
-  controls.load = new ClipboardTool (file_input_el)
-  controls.load.use = function(){
-    function readSingleFile(e) {
-      var file = e.target.files[0];
-      if (!file) {
-        return;
-      }
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var contents = e.target.result;
-        clipboard.import_colorcode(contents, true);
-      };
-      reader.readAsText(file);
+  function readSingleFile(e) {
+    var file = e.target.files[0];
+    if (!file) {
+      return;
     }
-    document.getElementById('file_input').addEventListener('change', readSingleFile, false);
-    clipboard.show()
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var contents = e.target.result;
+      clipboard.import_colorcode(contents, true);
+    };
+    reader.readAsText(file);
   }
- 
+  document.getElementById('file_input').addEventListener('change', readSingleFile, false);
+
+  function readSingleFileStamp(e) {
+    var file = e.target.files[0];
+    if (!file) {
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var contents = e.target.result;
+      custom.clone(fromSelection=false,fromFile=contents)
+    };
+    reader.readAsText(file);
+  }
+  document.getElementById('stamp_file_input').addEventListener('change', readSingleFileStamp, false);
+
   //
 
   controls.experimental_palette = new HiddenCheckbox (experimental_palette_toggle)
@@ -290,7 +300,7 @@ var controls = (function(){
       custom.clone()
     })
     add_sel_custom_el.addEventListener("click", function(){
-      custom.clone(true)
+      custom.clone(fromSelection=true, fromFile=null)
     })
 
   }

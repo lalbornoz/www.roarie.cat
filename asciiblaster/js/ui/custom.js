@@ -2,10 +2,31 @@ var custom = (function(){
 
   var exports = {}
   
-  exports.clone = function (fromSelection=false){
-    console.log(selection.a)
+  exports.clone = function (fromSelection=false,fromFile=null){
     var new_brush = null
-    if (!fromSelection) {
+    if (fromFile !== null) {
+      var max_width = 0
+      var json = colorcode.to_json(fromFile, {fg:0, bg:1})
+      for (var y = 0, line; line = json.lines[y]; y++){
+        max_width = max(max_width, line.length);
+      }
+      new_brush = new Matrix(max_width, json.lines.length, function(x,y){
+        var lex = new Lex(x, y)
+	if (x < json.lines[y].length) {
+          lex.char = String.fromCharCode(json.lines[y][x].value)
+          lex.fg = json.lines[y][x].fg
+          lex.bg = json.lines[y][x].bg
+          lex.opacity = 1
+	} else {
+          lex.char = " "
+          lex.fg = 99
+          lex.bg = 99
+          lex.opacity = 0
+	}
+        lex.build()
+        return lex
+      })
+    } else if (!fromSelection) {
       new_brush = brush.clone()
     } else {
       if (!(selection.a[0] === 0 && selection.a[1] === 0 && selection.b[0] === 0 && selection.b[1] === 0)) {

@@ -278,6 +278,9 @@ var controls = (function(){
     add_custom_el.addEventListener("click", function(){
       custom.clone()
     })
+    add_sel_custom_el.addEventListener("click", function(){
+      custom.clone(true)
+    })
 
   }
 

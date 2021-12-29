@@ -2,8 +2,20 @@ var custom = (function(){
 
   var exports = {}
   
-  exports.clone = function (){
-    var new_brush = brush.clone()
+  exports.clone = function (fromSelection=false){
+    console.log(selection.a)
+    var new_brush = null
+    if (!fromSelection) {
+      new_brush = brush.clone()
+    } else {
+      if (!(selection.a[0] === 0 && selection.a[1] === 0 && selection.b[0] === 0 && selection.b[1] === 0)) {
+        new_brush = new Matrix(selection.b[0] - selection.a[0], selection.b[1] - selection.a[1], function(x,y){
+          return canvas.getCell(x + selection.a[0], y + selection.a[1]).clone()
+        })
+      } else {
+        return false
+      }
+    }
     var rapper = document.createElement("div")
     rapper.className = "custom"
     new_brush.append(rapper)

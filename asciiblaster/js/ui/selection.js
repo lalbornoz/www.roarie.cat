@@ -146,6 +146,8 @@ var selection = (function(){
   }
   
   var selection = {}
+  selection.a = a
+  selection.b = b
   selection.reposition = reposition
   selection.down = down
   selection.move = move

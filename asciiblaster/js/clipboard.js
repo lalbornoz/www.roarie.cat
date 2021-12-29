@@ -87,24 +87,7 @@ var clipboard = (function () {
 //       })
     },
     export_data: function () {
-      var output
-      // switch (clipboard.format) {
-      switch (controls.save_format.value) {
-        case 'mirc':
-          output = canvas.mirc({cutoff: 400})
-          break
-        case 'ansi':
-          output = canvas.ansi()
-          break
-      }
-      if (output.cutoff){
-        cutoff_warning_el.style.display = 'block'
-      } else {
-        cutoff_warning_el.style.display = 'none'
-      }
-      //import_textarea.value = output
-      clipboard.focus()
-      return output
+      return canvas.mirc({cutoff: 0})
     },
     
     rotate_canvas: function(){

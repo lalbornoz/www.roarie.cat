@@ -137,8 +137,15 @@ var controls = (function(){
   controls.save = new ClipboardTool (save_el)
   controls.save.use = function(){
     changed
+    var filename = "mircart-" + Math.round((new Date()).getTime() / 1000) + "_" + Math.trunc(Math.random() * 1000) + ".txt";
+    var text = clipboard.export_data();
+    var blob = new Blob([text], {type:'text/plain'});
+    var link = document.createElement("a");
+    link.download = filename;
+    link.innerHTML = "Download File";
+    link.href = window.URL.createObjectURL(blob);
+    link.click();
     clipboard.show()
-    clipboard.export_mode()
   }
   controls.load = new ClipboardTool (file_input_el)
   controls.load.use = function(){

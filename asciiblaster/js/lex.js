@@ -61,14 +61,6 @@ Lex.prototype.mirc = function(){
       return "\x0f" + char
   }
 }
-Lex.prototype.ansi = function(){
-  var fg = ansi_fg[ this.fg&15 ]
-  var bg = ansi_bg[ this.bg&15 ]
-  var c = this.sanitize()
-  if (c == "\\") c = "\\\\"
-  if (c == '"') c = '\\"'
-  return "\\e[" + fg + ";" + bg + "m" + c
-}
 Lex.prototype.assign = function (lex){
   this.fg = lex.fg
   this.bg = lex.bg

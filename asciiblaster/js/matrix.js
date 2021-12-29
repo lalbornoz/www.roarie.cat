@@ -239,23 +239,6 @@ Matrix.prototype.resize_rapper = function(){
     // canvas_rapper.style.left = "auto"
   }
 }
-Matrix.prototype.ansi = function (opts) {
-  var lines = this.aa.map(function(row, y){
-    var last, line = ""
-    row.forEach(function(lex, x) {
-      if (lex.eqColor(last)) {
-        line += lex.sanitize()
-      } 
-      else {
-        line += lex.ansi()
-        last = lex
-      }
-    })
-    return line
-  })
-  var txt = lines.filter(function(line){ return line.length > 0 }).join('\\e[0m\\n') + "\\e[0m"
-  return 'echo -e "' + txt + '"'
-}
 Matrix.prototype.mirc = function (opts) {
   var cutoff = false
   var lines = this.aa.map(function(row, y){

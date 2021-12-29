@@ -14,23 +14,6 @@ var clipboard = (function () {
     focus: function () {},
     blur: function () {},
 
-    paste: function (e) {
-      e.preventDefault()
-      // images will come through as files
-      var types = toArray(e.clipboardData.types)
-      //import_textarea.value = ""
-      types.forEach(function(type, i){
-        console.log(type)
-        // this can be text/plain or text/html..
-        if (type.match('text/plain')) {
-          //import_textarea.value = e.clipboardData.getData(type)
-        }
-        else {
-          console.error("unknown type!", item.type)
-        }
-      })
-    },
-    
     import_colorcode: function (data, no_undo) {
     	if (data && data.preventDefault) {
 				//data = import_textarea.value

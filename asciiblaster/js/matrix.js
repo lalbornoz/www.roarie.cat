@@ -239,17 +239,6 @@ Matrix.prototype.resize_rapper = function(){
     // canvas_rapper.style.left = "auto"
   }
 }
-Matrix.prototype.ascii = function () {
-  var lines = this.aa.map(function(row, y){
-    var last, line = ""
-    row.forEach(function(lex, x) {
-      line += lex.ascii()
-    })
-    return line // .replace(/\s+$/,"")
-  })
-  var txt = lines.join("\n")
-  return txt
-}
 Matrix.prototype.ansi = function (opts) {
   var lines = this.aa.map(function(row, y){
     var last, line = ""
@@ -280,40 +269,16 @@ Matrix.prototype.mirc = function (opts) {
         last = lex
       }
     })
-    if (opts && opts.cutoff && line.length > opts.cutoff) {
-      cutoff = true
-      return line.substr(0, opts.cutoff)
-    }
+//    if (opts && opts.cutoff && line.length > opts.cutoff) {
+//      cutoff = true
+//      return line.substr(0, opts.cutoff)
+//    }
     return line
   })
   
   var txt = lines.filter(function(line){ return line.length > 0 }).join('\n')
   
   if (cutoff) {
-    txt = new String(txt)
-    txt.cutoff = true
-  }
-  return txt
-}
-Matrix.prototype.irssi = function(opts){
-  var mirc = this.mirc(opts)
-  var txt = mirc  
-                // .replace(/\%/g, '%%')
-                .replace(/\\/g, '\\x5C')
-                .replace(/\"/g, '\\\"')
-                // .replace(/\'/g, '\\\'')
-                .replace(/\`/g, '\\\`')
-                .replace(/\$/g, '\\$')
-                // .replace(/\n\s+/g, '\n')
-                // .replace(/\s+$/g, '\n')
-                // .replace(/^\n+/, '')
-                .replace(/\n/g, '\\n')
-                .replace(/\x02/g, '\\x02')
-                .replace(/\x03/g, '\\x03')
- 
-  txt = unicode.escapeToEscapedBytes(txt)
-  txt = '/exec -out printf "%b" "' + txt + '"\n'
-  if (mirc.cutoff){
     txt = new String(txt)
     txt.cutoff = true
   }

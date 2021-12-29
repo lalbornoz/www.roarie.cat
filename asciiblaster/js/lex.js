@@ -36,9 +36,6 @@ Lex.prototype.read = function(){
   this.char = this.span.innerHTML
   return this.char
 }
-Lex.prototype.ascii = function(){
-  return this.char || " "
-}
 Lex.prototype.sanitize = function(){
   switch (this.char) {
 //    case "%": return "%"

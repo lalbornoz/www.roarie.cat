@@ -136,7 +136,7 @@ var controls = (function(){
   })
   controls.save = new ClipboardTool (save_el)
   controls.save.use = function(){
-    changed && clipboard.upload_png()
+    changed
     clipboard.show()
     clipboard.export_mode()
   }
@@ -151,7 +151,7 @@ var controls = (function(){
   controls.save_format.name = 'save_format'
   controls.save_format.memorable = true
   var cs = controls.save_format.controls
-  cs.mirc.use = cs.irssi.use = cs.ascii.use = function(){
+  cs.mirc.use = function(){
     clipboard.export_data()
   }
   //

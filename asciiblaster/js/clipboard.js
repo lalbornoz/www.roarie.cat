@@ -1,24 +1,20 @@
 var clipboard = (function () {
 
   var exports = {
-    format: "irssi",
+    format: "mirc",
     importing: false,
     visible: false,
     canvas: document.createElement("canvas"),
     canvas_r: document.createElement("canvas"),
 
     bind: function () {
-//      import_ascii.addEventListener("change", exports.setFormat("ascii"))
-//      import_irssi.addEventListener("change", exports.setFormat("irssi"))
 //      import_mirc.addEventListener("change", exports.setFormat("mirc"))
       import_button.addEventListener("click", exports.import_colorcode)
       export_button.addEventListener("click", exports.export_data)
       save_button.addEventListener("click", exports.save_png)
-      upload_button.addEventListener("click", exports.upload_png)
       import_textarea.addEventListener("focus", exports.focus)
       import_textarea.addEventListener("blur", exports.blur)
       import_textarea.addEventListener('paste', exports.paste)
-//      import_irssi.setAttribute("checked", true)
     },
     setFormat: function (name) {
       return function () {
@@ -81,21 +77,6 @@ var clipboard = (function () {
 				data = data || import_textarea.value
     	}
       
-      var irssi_style_regex = /^\s*\/exec -out printf ("%b" )?"/;
-
-      // turn irssi style into mirc style
-      if (data.match(irssi_style_regex)){
-        data = data.replace(/\\x03/gm, '\x03')
-                   .replace(/(\\x..)+/gm, unicode.unescapeFromEscapedBytes)
-                   .replace(/\\x5C/g, '\\')
-                   .replace(/\\n/gm, '\n')
-                   .replace(/\\`/gm, '`')
-                   .replace(/\\"/gm, '"')
-                   .replace(/\\\$/gm, '$')
-                   .replace(irssi_style_regex, '')
-                   .replace(/"\s*$/, '')
-      }
-
       // not a colorcode
       if (!data.match(/\x03/))
         return exports.import_text();
@@ -164,14 +145,8 @@ var clipboard = (function () {
       var output
       // switch (clipboard.format) {
       switch (controls.save_format.value) {
-        case 'ascii':
-          output = canvas.ascii()
-          break
         case 'mirc':
           output = canvas.mirc({cutoff: 400})
-          break
-        case 'irssi':
-          output = canvas.irssi({cutoff: 400})
           break
         case 'ansi':
           output = canvas.ansi()
@@ -231,16 +206,6 @@ var clipboard = (function () {
       clipboard.export_canvas(save_fn)
     },
     
-    upload_png: function () {
-      var upload_fn = function(canvas_out){
-        var blob = PNG.canvas_to_blob_with_colorcode(canvas_out, canvas.mirc())
-        var filename = clipboard.filename()
-        var tag = 'ascii'
-        upload(blob, filename, tag, canvas.mirc())
-      }
-      clipboard.export_canvas(upload_fn)
-    }
-
   }
  
   // http...?a=1&b=2&b=3 -> {a: '1', b: ['2', '3']}

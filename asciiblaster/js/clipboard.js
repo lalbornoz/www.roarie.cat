@@ -7,61 +7,23 @@ var clipboard = (function () {
     canvas: document.createElement("canvas"),
     canvas_r: document.createElement("canvas"),
 
-    bind: function () {
-//      import_mirc.addEventListener("change", exports.setFormat("mirc"))
-      import_button.addEventListener("click", exports.import_colorcode)
-      export_button.addEventListener("click", exports.export_data)
-      save_button.addEventListener("click", exports.save_png)
-      import_textarea.addEventListener("focus", exports.focus)
-      import_textarea.addEventListener("blur", exports.blur)
-      import_textarea.addEventListener('paste', exports.paste)
-    },
-    setFormat: function (name) {
-      return function () {
-        clipboard.format = name
-        if (! clipboard.importing) { clipboard.export_data() }
-      }
-    },
-    show: function () { import_rapper.style.display = "block"; clipboard.visible = true; changed = false },
-    hide: function () { import_rapper.style.display = "none"; clipboard.visible = false },
-    focus: function () {
-      if (! clipboard.importing) {
-        import_textarea.focus()
-        import_textarea.select()
-      }
-    },
-    blur: function () {
-    },
-
-    import_mode: function () {
-      focus()
-      clipboard.importing = true
-      gallery_rapper.style.display = 'none'
-      format_el.style.display = 'none'
-      cutoff_warning_el.style.display = 'none'
-      import_buttons.style.display = "inline"
-      import_textarea.value = ""
-    },
-    export_mode: function () {
-      focus()
-      clipboard.importing = false
-      import_buttons.style.display = "none"
-      format_el.style.display = 'inline'
-      cutoff_warning_el.style.display = 'none'
-      gallery_rapper.style.display = 'inline'
-      clipboard.export_data()
-    },
+    bind: function () {},
+    setFormat: function (name) {},
+    show: function () {},
+    hide: function () {},
+    focus: function () {},
+    blur: function () {},
 
     paste: function (e) {
       e.preventDefault()
       // images will come through as files
       var types = toArray(e.clipboardData.types)
-      import_textarea.value = ""
+      //import_textarea.value = ""
       types.forEach(function(type, i){
         console.log(type)
         // this can be text/plain or text/html..
         if (type.match('text/plain')) {
-          import_textarea.value = e.clipboardData.getData(type)
+          //import_textarea.value = e.clipboardData.getData(type)
         }
         else {
           console.error("unknown type!", item.type)
@@ -71,10 +33,10 @@ var clipboard = (function () {
     
     import_colorcode: function (data, no_undo) {
     	if (data && data.preventDefault) {
-				data = import_textarea.value
+				//data = import_textarea.value
     	}
     	else {
-				data = data || import_textarea.value
+				//data = data || import_textarea.value
     	}
       
       // not a colorcode
@@ -107,7 +69,7 @@ var clipboard = (function () {
     },
     
     import_text: function () {
-      var data = import_textarea.value
+      //var data = import_textarea.value
       var lines = data.split("\n")
       var width = lines.reduce(function(a,b){ console.log(a,b); return Math.max(a, b.length) }, 0)
       var height = lines.length
@@ -157,7 +119,7 @@ var clipboard = (function () {
       } else {
         cutoff_warning_el.style.display = 'none'
       }
-      import_textarea.value = output
+      //import_textarea.value = output
       clipboard.focus()
       return output
     },

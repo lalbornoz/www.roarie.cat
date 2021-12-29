@@ -108,7 +108,6 @@ body.loading { opacity: 0; }
 body { transition: 0.1s linear; }
 #import_textarea { font-size: 9pt; }
 textarea { font-size:12pt; width: 37vw; height: 300px; background: #333; color: #0f0; border: 0; font-family: 'FixedsysExcelsior301Regular'; outline: 0; border: 1px solid #333; background:#010;}
-#import_rapper { display: none; }
 #canvas_rapper {
   white-space: pre;
   box-shadow: 0 0 2px rgba(255,255,255,0.3);
@@ -196,7 +195,6 @@ textarea { font-size:12pt; width: 37vw; height: 300px; background: #333; color: 
   100% { color: hsl(360,100%,50%) }
 }
 
-.panke #load_el,
 .panke #gallery_el,
 .panke #import_textarea,
 .panke #doc_el,
@@ -208,4 +206,3 @@ textarea { font-size:12pt; width: 37vw; height: 300px; background: #333; color: 
 .panke #vertical_checkbox,
 .panke #add_custom_el,
 .panke #add_sel_custom_el,
-.panke #format_el { display: none !important; }

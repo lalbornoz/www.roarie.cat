@@ -53,9 +53,7 @@ function bind () {
 
     var ae = document.activeElement
 
-    if (ae !== import_textarea) {
-      if (is_desktop) cursor_input.focus()
-    }
+    if (is_desktop) cursor_input.focus()
 
     if (selecting) {
       selection.up(e)

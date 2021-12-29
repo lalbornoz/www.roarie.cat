@@ -140,20 +140,24 @@ var controls = (function(){
     clipboard.show()
     clipboard.export_mode()
   }
-  controls.load = new ClipboardTool (load_el)
+  controls.load = new ClipboardTool (file_input_el)
   controls.load.use = function(){
-    // console.log("use")
+    function readSingleFile(e) {
+      var file = e.target.files[0];
+      if (!file) {
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var contents = e.target.result;
+        clipboard.import_colorcode(contents, true);
+      };
+      reader.readAsText(file);
+    }
+    document.getElementById('file_input').addEventListener('change', readSingleFile, false);
     clipboard.show()
-    clipboard.import_mode()
   }
  
-  controls.save_format = new RadioGroup(format_el)
-  controls.save_format.name = 'save_format'
-  controls.save_format.memorable = true
-  var cs = controls.save_format.controls
-  cs.mirc.use = function(){
-    clipboard.export_data()
-  }
   //
 
   controls.experimental_palette = new HiddenCheckbox (experimental_palette_toggle)

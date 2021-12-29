@@ -15,15 +15,12 @@ var current_tool, current_filetool, current_canvas
 var mouse = { x: 0, y: 0 }
 
 function init () {
+  document.body.classList.remove('panke')
   build()
   bind()
   clipboard.load_from_location()
 }
 function build () {
-  shader.init()
-//  shader.run(canvas)
-  shader.animate()
-
   canvas.append(canvas_rapper)
   brush.append(brush_rapper)
   palette.append(palette_rapper)
@@ -31,7 +28,6 @@ function build () {
   letters.repaint("Basic Latin")
   
   controls.circle.focus()
-//  controls.shader.focus()
 
   brush.bg = colors.red
   brush.generate()
@@ -51,13 +47,10 @@ function bind () {
   
   window.addEventListener('mouseup', function(e){
     dragging = erasing = false
-    // if (current_filetool.name != 'shader' && current_filetool.name != 'load' && current_filetool.name != 'save' && is_desktop) {
-      // cursor_input.focus()
-    // }
-    
+
     var ae = document.activeElement
 
-    if (ae !== shader_textarea && ae !== import_textarea && ae !== username_input && ae !== upload_input) {
+    if (ae !== import_textarea && ae !== username_input && ae !== upload_input) {
       if (is_desktop) cursor_input.focus()
     }
 
@@ -76,7 +69,6 @@ function bind () {
   })
   
   window.addEventListener('mousedown', function(e){
-    // if (current_filetool.name != 'shader' && is_desktop) { cursor_input.focus() }
   })
 
   document.addEventListener('DOMContentLoaded', function(){

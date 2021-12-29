@@ -114,13 +114,6 @@ var goodies = (function(){
 
 // Set your brush to be the ^ character, square, about 10x10
 // Draw "char" only
-// Then animate this shader on the canvas:
-
-// if (lex.char=="^") {
-//   lex.bg += 1
-//   lex.char = " "
-// }
-// lex.bg += 1
 
 
 

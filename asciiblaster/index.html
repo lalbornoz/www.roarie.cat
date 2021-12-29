@@ -22,7 +22,6 @@
       <div id="palette_rapper"></div>
       <div id="secret_rapper">
         <span id="experimental_palette_toggle">.</span>
-        <!-- <span id="nopaint_toggle">N</span> -->
       </div>
       <div id="letters_rapper"></div>
       <div id="custom_rapper"></div>
@@ -66,21 +65,8 @@
         <span id="clear_el" class="tool">new</span>
         <span id="save_el" class="tool">save</span>
         <span id="load_el" class="tool">load</span>
-        <br>
-        <span id="shader_el" class="tool">shader</span>
-        <span id="webcam_el" class="tool">webcam</span>
         <a id="doc_el" href="/asciiblaster/doc/" target="_blank">doc</a>
         <br>
-        <span id="advanced_checkbox" class="tool">_ advanced</span>
-        <br>
-        <span id="send_to_irc_el" class="tool">&gt; send to IRC</span>
-        <br>
-        <div id="nopaint_rapper">
-          <br>
-          <span id="nopaint_no_el" class="tool">no</span><br>
-          <span id="nopaint_paint_el" class="tool">paint</span><br>
-          <span id="nopaint_pause_el" class="tool hidden">pause</span><br>
-        </div>
         <br>
         brush: <span id="brush_w_el" class="ed">5</span> x <span id="brush_h_el" class="ed">5</span><br>
         canvas: <span id="canvas_w_el" class="ed">100</span> x <span id="canvas_h_el" class="ed">30</span><br>
@@ -102,29 +88,12 @@
         <textarea id="import_textarea"></textarea>
       </div>
 
-      <div id="shader_rapper">
-        <span id="animate_checkbox" class="tool">_ animate</span>
-        to <span id="shader_target_el">*canvas brush selection</span>
-        <span id="shader_fps_el" class="hidden faded"></span><br>
-        <textarea id="shader_textarea"></textarea>
-      </div>
     </div>
-  </div>
-  <div id="webcam_rapper" class="transparent">
-    <span class="close" id="webcam_close">x</span>
-    <iframe id="webcam_iframe"></iframe>
   </div>
 
   <input type="text" id="cursor_input">
 
 </body>
-<script type="text/javascript-shader" id="demo_shader">
-// lex.bg = hue((x+y*y+t/10)/20)
-// lex.fg = colors.white
-// lex.char = " "
-// lex.opacity = 1
-
-</script>
 <script src="js/vendor/colorcode.js"></script>
 <script src="js/vendor/text-encoder-lite.js"></script>
 <script src="js/vendor/dataUriToBlob.js"></script>
@@ -145,7 +114,6 @@
 <script src="js/matrix.js"></script>
 <script src="js/blit.js"></script>
 <script src="js/tool.js"></script>
-<script src="js/shader.js"></script>
 <script src="js/draw.js"></script>
 
 <script src="js/ui/brush.js"></script>
@@ -158,7 +126,6 @@
 <script src="js/ui/letters.js"></script>
 <script src="js/ui/selection.js"></script>
 <script src="js/ui/transform.js"></script>
-<script src="js/ui/nopaint.js"></script>
 
 <script src="js/app.js"></script>
 </html>

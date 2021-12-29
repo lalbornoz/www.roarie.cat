@@ -6,7 +6,6 @@ var upload = (function(){
   function upload(blob, filename, tag, ascii){
     if (uploading) return
     filename = filename || get_filename()
-    tag = tag || "shader"
 
     button.innerHTML = "uploading..."
     button.className = "uploading"

@@ -21,17 +21,11 @@ var letters = (function(){
     last_charset = charset
     var chars = unicode.block(charset, 34)
     if (chars[0] != " ") chars.unshift(" ")
-    if (canvas.vertical) {
-      letters.resize( Math.ceil( chars.length / 18 ), 18 )
-    }
-    else {
-      letters.resize( 34, Math.ceil( chars.length / 34 ) )
-    }
+    letters.resize( 34, Math.ceil( chars.length / 34 ) )
 
     var i = 0
 
     letters.forEach(function(lex,x,y){
-      if (canvas.vertical) { x=x^y;y=x^y;x=x^y }
       var char = chars[i++]
       if (palette.chars.indexOf(brush.char) > 1) {
         lex.bg = brush.fg

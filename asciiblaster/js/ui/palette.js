@@ -12,17 +12,11 @@ var palette = (function(){
 
   palette.repaint = function(){
     var xw = use_experimental_palette ? 5 : 2
-    if (canvas.vertical) {
-      palette.resize( xw, 18 )
-    }
-    else {
-      palette.resize( 34, xw )
-    }
+    palette.resize( 34, xw )
 
     palette.forEach(function(lex,x,y){
       if (x > 1) {
 	x -= 2
-        if (canvas.vertical) { x=x^y;y=x^y;x=x^y;x*=2 }
         if (y < 2) {
           lex.bg = palette_fn(x>>1)
           lex.fg = palette_fn(x>>1)

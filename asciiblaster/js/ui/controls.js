@@ -234,28 +234,6 @@ var controls = (function(){
 
   //
   
-  controls.vertical = new BlurredCheckbox (vertical_checkbox)
-  controls.vertical.memorable = true
-  controls.vertical.use = function(state){
-    canvas.vertical = typeof state == "boolean" ? state : ! canvas.vertical
-    controls.vertical.refresh()
-    document.getElementById("tools_block").style.width = ""
-    document.getElementById("ui_rapper").style.width = ""
-  }
-  controls.vertical.refresh = function(){
-    if (canvas.vertical) {
-      document.body.classList.add("vertical")
-    }
-    else {
-      document.body.classList.remove("vertical")
-    }
-    palette.repaint()
-    letters.repaint()
-    this.update(canvas.vertical)
-  }
-
-  //
-  
   controls.brush_w = new Lex (brush_w_el)
   controls.brush_h = new Lex (brush_h_el)
   controls.canvas_w = new Lex (canvas_w_el)

@@ -1,40 +1,48 @@
 var clipboard = (function () {
-
   var exports = {
-    format: "mirc",
-    importing: false,
-    visible: false,
     canvas: document.createElement("canvas"),
     canvas_r: document.createElement("canvas"),
 
-    bind: function () {},
-    setFormat: function (name) {},
-    show: function () {},
-    hide: function () {},
-    focus: function () {},
-    blur: function () {},
+    // {{{ export_canvas: function(done_fn)
+    export_canvas: function(done_fn) {
+      var opts = {
+        bg: 1,
+        canvas: clipboard.canvas,
+        fg: 0,
+        font: canvas.pixels ? 'fixedsys_8x8' : 'fixedsys_8x15',
+        palette: 'mirc',
+      }
+      opts.done = function () {
+        var c = canvas.rotated ? clipboard.rotate_canvas() : clipboard.canvas
+        if (done_fn) done_fn(c)
+      }
 
+      var start = Date.now();
+      colorcode.to_canvas(canvas.mirc(), opts)
+      var total = Date.now() - start;
+      console.log("took " + total)
+    },
+    // }}}
+    // {{{ export_data: function()
+    export_data: function () {
+      return canvas.mirc({cutoff: 0})
+    },
+    // }}}
+    // {{{ import_colorcode: function (data, no_undo)
     import_colorcode: function (data, no_undo) {
-    	if (data && data.preventDefault) {
-				//data = import_textarea.value
-    	}
-    	else {
-				//data = data || import_textarea.value
-    	}
-      
       var json = colorcode.to_json(data, {fg:0, bg:1})
 
       if (!no_undo) undo.new()
       if (!no_undo) undo.save_rect(0,0, canvas.w, canvas.h)
-      if (json.w !== canvas.w || json.h !== canvas.h){
+      if (json.w !== canvas.w || json.h !== canvas.h) {
         if (!no_undo) undo.save_size(canvas.w, canvas.h)
         canvas.resize(json.w, json.h, true)
       }
       canvas.clear()
 
-      for (var y = 0, line; line = json.lines[y]; y++){
+      for (var y = 0, line; line = json.lines[y]; y++) {
         var row = canvas.aa[y]
-        for (var x = 0, char; char = line[x]; x++){
+        for (var x = 0, char; char = line[x]; x++) {
           var lex = row[x]
           lex.char = String.fromCharCode(char.value)
           lex.underline = char.u
@@ -45,13 +53,11 @@ var clipboard = (function () {
         }
       }
 
-      current_filetool && current_filetool.blur()     
+      current_filetool && current_filetool.blur()
     },
-    export_data: function () {
-      return canvas.mirc({cutoff: 0})
-    },
-    
-    rotate_canvas: function(){
+    // }}}
+    // {{{ rotate_canvas: function()
+    rotate_canvas: function() {
       var cr = clipboard.canvas_r, c = clipboard.canvas
       cr.width = c.height
       cr.height = c.width
@@ -62,123 +68,50 @@ var clipboard = (function () {
       ctx.drawImage(c, 0, 0)
       return cr
     },
+    // }}}
+    // {{{ save_png: function()
+    save_png: function() {
+      var save_fn = function(canvas_out) {
+        // {{{ const b64toBlob = (b64Data, contentType='', sliceSize=512)
+        // <https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript/16245768#16245768>
+        const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+          const byteCharacters = atob(b64Data);
+          const byteArrays = [];
 
-    export_canvas: function (done_fn) {
-      var opts = {
-        palette: 'mirc',
-        font: canvas.pixels ? 'fixedsys_8x8' : 'fixedsys_8x15',
-        fg: 0,
-        bg: 1,
-        canvas: clipboard.canvas
-      }
-      opts.done = function(){
-        var c = canvas.rotated ? clipboard.rotate_canvas() : clipboard.canvas
-        if (done_fn) done_fn(c)
-      }
+          for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
 
-      var start = Date.now();
-      colorcode.to_canvas(canvas.mirc(), opts)
-      var total = Date.now() - start;
-      console.log("took " + total)
-    },
-    
-    filename: function () {
-      return [ +new Date, "ascii", user.username ].join("-")
-    },
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+              byteNumbers[i] = slice.charCodeAt(i);
+            }
 
-    save_png: function () {
-      var save_fn = function(canvas_out){
-        var filename = clipboard.filename() + ".png"
-        var blob = PNG.canvas_to_blob_with_colorcode(canvas_out, canvas.mirc())
-        saveAs(blob, filename);
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+          }
+
+          const blob = new Blob(byteArrays, {type: contentType});
+          return blob;
+        }
+        // }}}
+
+        var filename = document.getElementById("filename_el").value || "mircart-" + Math.round((new Date()).getTime() / 1000) + "_" + Math.trunc(Math.random() * 1000);
+        if (!filename.match(/\.png$/)) { filename += ".png" }
+        var blob = b64toBlob(canvas_out.toDataURL().replace(/^.*base64,/, ""), "image/png")
+        var link = document.createElement("a");
+        link.download = filename;
+        link.innerHTML = "Download File";
+        link.href = window.URL.createObjectURL(blob);
+        link.click();
       }
       clipboard.export_canvas(save_fn)
     },
-    
-  }
- 
-  // http...?a=1&b=2&b=3 -> {a: '1', b: ['2', '3']}
-  function parse_url_search_params(url){
-    var params = {}
-    url = url.split('?')
-    if (url.length < 2) return params
-
-    var search = url[1].split('&')
-    for (var i = 0, pair; pair = search[i]; i++){
-      pair = pair.split('=')
-      if (pair.length < 2) continue
-      var key = pair[0]
-      var val = pair[1]
-      if (key in params){
-        if (typeof params[key] === 'string'){
-          params[key] = [params[key], val]
-        }
-        else params[key].push(val)
-      }
-      else params[key] = val
-    }
-    return params
+    // }}}
   }
 
-  function get_filetype(txt){
-    txt = txt.split('.')
-    return txt[txt.length - 1].toLowerCase() 
-  }
-
-  function fetch_url(url, f, type){
-    type = type || 'arraybuffer'
-    url = "/cgi-bin/proxy?" + url
-    //url = "http://198.199.72.134/cors/" + url
-    var xhr = new XMLHttpRequest()
-    xhr.open('GET', url, true)
-    xhr.responseType = type
-    xhr.addEventListener('load', function(){ f(xhr.response) })
-    xhr.send()
-  }
-
-  function load_text(txt){
-    clipboard.import_colorcode(txt, true)
-  }
-
-  function load_png(buf){
-    var chunks = PNG.decode(buf)
-    if (!chunks) return
-    var itxt_chunks = []
-    for (var i=0, c; c=chunks[i]; i++){
-      if (c.type !== 'iTXt') continue
-      var itxt = PNG.decode_itxt_chunk(c)
-      if (!itxt.keyword || itxt.keyword !== 'colorcode') continue
-      clipboard.import_colorcode(itxt.data, true)
-    }
-  }
-  
-  function sally_url_convert(url){
-    var png_regex = /^https?:\/\/www\.roarie\.cat\/asciiblaster\/sallies\/([0-9]+)\/([^.]+)\.png$/
-    var matches = url.match(png_regex)
-    if (!matches) return url
-    return 'http://www.roarie.cat/asciiblaster/den/sallies/' + matches[1] + '/raw-' + matches[2] + '?.txt'
-    // txt suffix to force www.roarie.cat/asciiblaster proxy
-  }
-
-  exports.load_from_location = function(){
-    var params = parse_url_search_params(window.location + '')
-    if (!params.url) return
-    var url = params.url
-    url = sally_url_convert(url)
-    var type = get_filetype(url)
-    switch (type){
-      case 'txt':
-        fetch_url(url, load_text, 'text')
-        break
-      case 'png':
-        fetch_url(url, load_png)
-        break
-    } 
-
-  }
-  
   return exports
-  
 })()
 
-
+/*
+ * vim:expandtab sw=2 ts=2 tw=0
+ */

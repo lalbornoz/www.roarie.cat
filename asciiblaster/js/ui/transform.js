@@ -1,10 +1,17 @@
-var transform = (function(){
-
-  var p = [0,0], q = [0,0]
-  var mode
+var transform = (function() {
   var copy
+  var exports = {}
+  var mode
+  var p = [0,0], q = [0,0]
 
-  function down (e, lex, point){
+  // {{{ function done()
+  function done() {
+    transforming = false
+    copy && copy.demolish()
+  }
+  // }}}
+  // {{{ function down (e, lex, point)
+  function down (e, lex, point) {
     p[0] = point[0]
     p[1] = point[1]
     q[0] = e.pageX
@@ -14,7 +21,9 @@ var transform = (function(){
     copy = canvas.clone()
     mode.init(e)
   }
-  function move (e, lex, point){
+  // }}}
+  // {{{ function move (e, lex, point)
+  function move (e, lex, point) {
     var pdx = point[0] - p[0]
     var pdy = point[1] - p[1]
     var dx = e.pageX - q[0]
@@ -31,21 +40,32 @@ var transform = (function(){
       }
     }
   }
-  function up (e){
+  // }}}
+  // {{{ function set_mode(m)
+  function set_mode(m) {
+    if (m in modes) {
+      mode = modes[m]
+      transforming = true
+    }
   }
-  
-  var modes = {
+  // }}}
+  // {{{ function up (e)
+  function up (e) {
+  }
+  // }}}
 
+  var modes = {
+    // {{{ rotate: {...}
     rotate: {
-      init: function(e){
+      init: function(e) {
         mode.theta = 0
       },
-      before: function(dx, dy){
+      before: function(dx, dy) {
         var radius = dist(0, 0, dx, dy)
         if (radius < 10) return
         mode.theta = angle(0, 0, dx, -dy)
       },
-      shade: function(src, dest, lex, x, y, w, h){
+      shade: function(src, dest, lex, x, y, w, h) {
         x = (x/w) * 2 - 1
         y = (y/h) * 2 - 1
         var ca = cos(mode.theta)
@@ -59,13 +79,14 @@ var transform = (function(){
         return true
       },
     },
-    
+    // }}}
+    // {{{ scale: {...}
     scale: {
-      init: function(e){
+      init: function(e) {
         mode.independent = e.shiftKey || e.altKey || e.metaKey
         mode.x_scale = mode.y_scale = 0
       },
-      before: function(dx, dy, pdx, pdy){
+      before: function(dx, dy, pdx, pdy) {
         if (mode.independent) {
           mode.x_scale = Math.pow(2, -pdx / (canvas.w / 8))
           mode.y_scale = Math.pow(2, -pdy / (canvas.h / 8))
@@ -74,7 +95,7 @@ var transform = (function(){
           mode.x_scale = mode.y_scale = Math.pow(2, -pdx / (canvas.w / 8))
         }
       },
-      shade: function(src, dest, lex, x, y, w, h){
+      shade: function(src, dest, lex, x, y, w, h) {
         x = ((x-p[0])/w) * 2 - 1
         y = ((y-p[1])/h) * 2 - 1
         x *= mode.x_scale
@@ -86,34 +107,36 @@ var transform = (function(){
         return true
       },
     },
-    
+    // }}}
+    // {{{ translate: {...}
     translate: {
-      init: function(e){
+      init: function(e) {
         mode.dx = mode.dy = 0
       },
-      before: function(dx, dy, pdx, pdy){
+      before: function(dx, dy, pdx, pdy) {
         mode.dx = -pdx
         mode.dy = -pdy
       },
-      shade: function(src, dest, lex, x, y, w, h){
+      shade: function(src, dest, lex, x, y, w, h) {
         var copy = src.get(x+mode.dx, y+mode.dy)
         lex.assign(copy)
         return true
       },
     },
-
+    // }}}
+    // {{{ slice: {...}
     slice: {
-      init: function(e){
+      init: function(e) {
         mode.is_y = ! (e.altKey || e.metaKey)
         mode.reverse = !! (e.shiftKey)
         mode.position = 0
         mode.direction = 0
         mode.last_dd = -1
       },
-      before: function(dx, dy, pdx, pdy, point){
+      before: function(dx, dy, pdx, pdy, point) {
         var new_position = mode.is_y ? point[1] : point[0]
         var dd = mode.is_y ? pdx : pdy
-        
+
         if (mode.position !== new_position) {
           mode.position = new_position
           mode.direction = 0
@@ -125,7 +148,7 @@ var transform = (function(){
         mode.last_dd = dd
         copy.assign(canvas)
       },
-      shade: function(src, dest, lex, x, y, w, h){
+      shade: function(src, dest, lex, x, y, w, h) {
         if (mode.is_y) {
           if (y >= mode.position || (mode.reverse && mode.position >= y)) {
             var copy = src.get(x + mode.direction, y)
@@ -139,38 +162,19 @@ var transform = (function(){
         return true
       },
     },
+    // }}}
+  }
+
+  exports.done = done
+  exports.down = down
+  exports.modes = modes
+  exports.move = move
+  exports.set_mode = set_mode
+  exports.up = up
+
+  return exports
+})()
 
 /*
-    mode: {
-      init: function(e){
-      },
-      before: function(dx, dy, pdx, pdy){
-      },
-      shade: function(src, dest, lex, x, y, w, h){
-      },
-    },
-*/
-  }
-  
-  function set_mode(m){
-    if (m in modes) {
-      mode = modes[m]
-      transforming = true
-    }
-  }
-  
-  function done(){
-    transforming = false
-    copy && copy.demolish()
-  }
-  
-  return {
-    down: down,
-    move: move,
-    up: up,
-    set_mode: set_mode,
-    modes: modes,
-    done: done,
-  }
-
-})()
+ * vim:expandtab sw=2 ts=2 tw=0
+ */

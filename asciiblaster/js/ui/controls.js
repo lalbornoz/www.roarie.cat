@@ -97,6 +97,14 @@ var controls = (function(){
     filling = false
     document.body.classList.remove("bucket")
   }
+
+  controls.underline = new Tool (underline_el)
+  controls.underline.use = function(){
+    underlining = true
+  }
+  controls.underline.done = function(){
+    underlining = false
+  }
  
   controls.undo = new BlurredTool (undo_el)
   controls.undo.use = function(){

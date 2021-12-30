@@ -4,6 +4,7 @@ var drawing = false
 var erasing = false
 var selecting = false
 var filling = false
+var underlining = false
 var changed = false
 var transforming = false
 var mirror_x = false

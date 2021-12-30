@@ -52,6 +52,14 @@ var canvas = current_canvas = (function(){
           undo.new()
           draw.fill(brush, x, y)
         }
+        else if (underlining) {
+          if (e.shiftKey) {
+            lex.underline = false
+	  } else {
+            lex.underline = true
+	  }
+          lex.build()
+	}
         canvas.focus(x, y)
       })
 
@@ -69,6 +77,14 @@ var canvas = current_canvas = (function(){
         else if (transforming) {
           transform.move(e, lex, point)
         }
+        else if (underlining) {
+          if (e.shiftKey) {
+            lex.underline = false
+	  } else {
+            lex.underline = true
+	  }
+          lex.build()
+	}
         canvas.focus(x, y)
       })
 

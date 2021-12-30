@@ -122,6 +122,7 @@ var controls = (function(){
     undo.save_rect(0, 0, canvas.w, canvas.h)
     canvas.erase()
     current_filetool && current_filetool.blur()
+    document.getElementById("filename_el").value = ""
   }
 
   controls.grid = new BlurredCheckbox (grid_el)
@@ -145,7 +146,8 @@ var controls = (function(){
   controls.save = new ClipboardTool (save_el)
   controls.save.use = function(){
     changed
-    var filename = "mircart-" + Math.round((new Date()).getTime() / 1000) + "_" + Math.trunc(Math.random() * 1000) + ".txt";
+    var filename = document.getElementById("filename_el").value || "mircart-" + Math.round((new Date()).getTime() / 1000) + "_" + Math.trunc(Math.random() * 1000);
+    if (!filename.match(/\.txt$/)) { filename += ".txt" }
     var text = clipboard.export_data();
     var blob = new Blob([text], {type:'text/plain'});
     var link = document.createElement("a");
@@ -164,6 +166,7 @@ var controls = (function(){
     reader.onload = function(e) {
       var contents = e.target.result;
       clipboard.import_colorcode(contents, true);
+      document.getElementById("filename_el").value = file.name
     };
     reader.readAsText(file);
   }

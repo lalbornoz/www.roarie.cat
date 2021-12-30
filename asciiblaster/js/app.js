@@ -54,6 +54,7 @@ function bind () {
     dragging = erasing = false
 
     var ae = document.activeElement
+    if (ae.id === "filename_el") { return }
 
     if (is_desktop) cursor_input.focus()
 

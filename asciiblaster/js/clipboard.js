@@ -22,10 +22,6 @@ var clipboard = (function () {
 				//data = data || import_textarea.value
     	}
       
-      // not a colorcode
-      if (!data.match(/\x03/))
-        return exports.import_text();
-
       var json = colorcode.to_json(data, {fg:0, bg:1})
 
       if (!no_undo) undo.new()
@@ -41,6 +37,7 @@ var clipboard = (function () {
         for (var x = 0, char; char = line[x]; x++){
           var lex = row[x]
           lex.char = String.fromCharCode(char.value)
+          lex.underline = char.u
           lex.fg = char.fg
           lex.bg = char.bg
           lex.opacity = 1
@@ -49,42 +46,6 @@ var clipboard = (function () {
       }
 
       current_filetool && current_filetool.blur()     
-    },
-    
-    import_text: function () {
-      //var data = import_textarea.value
-      var lines = data.split("\n")
-      var width = lines.reduce(function(a,b){ console.log(a,b); return Math.max(a, b.length) }, 0)
-      var height = lines.length
-      if (width > canvas.max) {
-        return alert("input too wide")
-      }
-      if (height > canvas.max) {
-        return alert("input too tall")
-      }
-      undo.new()
-      undo.save_rect(0,0, canvas.w, canvas.h)
-      canvas.clear()
-      lines.forEach(function(line, y){
-        var row = canvas.aa[y]
-        if (! row) return
-        for (var x = 0; x < line.length; x++) {
-          var lex = row[x]
-          if (! lex) return
-          lex.char = line[x]
-          lex.fg = brush.bg
-          lex.opacity = 1
-          lex.build()
-        }
-      })
-      // TODO: some notion of a "selected" region which cuts/clones the underlying region
-      
-//       var pasted_region = new Matrix (width, height, function(x,y){
-//         var lex = new Lex (x,y)
-//         lex.char = lines[y][x] || " "
-//         lex.build()
-//         return lex
-//       })
     },
     export_data: function () {
       return canvas.mirc({cutoff: 0})

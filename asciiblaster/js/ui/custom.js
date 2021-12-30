@@ -23,6 +23,8 @@ var custom = (function(){
           lex.bg = 99
           lex.opacity = 0
 	}
+
+        lex.underline = json.lines[y][x].u
         lex.build()
         lex.span.style.maxWidth = "8px"
         return lex

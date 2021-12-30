@@ -242,12 +242,23 @@ Matrix.prototype.resize_rapper = function(){
 Matrix.prototype.mirc = function (opts) {
   var cutoff = false
   var lines = this.aa.map(function(row, y){
+    var underline = false
     var last, line = ""
     row.forEach(function(lex, x) {
       if (lex.eqColor(last)) {
+        if (lex.underline && !underline) {
+          line += "\x1f"; underline = true
+	} else if (!lex.underline && underline) {
+          line += "\x1f"; underline = false
+	}
         line += lex.sanitize()
       } 
       else {
+        if (lex.underline && !underline) {
+          line += "\x1f"; underline = true
+	} else if (!lex.underline && underline) {
+          line += "\x1f"; underline = false
+	}
         line += lex.mirc()
         last = lex
       }

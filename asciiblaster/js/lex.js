@@ -7,6 +7,7 @@ function Lex (x,y) {
   else {
     this.span = x
   }
+  this.underline = false
   this.fg = colors.white
   this.bg = colors.black
   this.char = " "
@@ -18,6 +19,11 @@ Lex.prototype.build = function(){
   if (isNaN(this.fg) || this.fg == Infinity || this.fg == -Infinity) this.fg = colors.black
   this.span.className = this.css()
   this.span.innerHTML = this.html()
+  if (this.underline) {
+    this.span.style.textDecoration = "underline"
+  } else {
+    this.span.style.textDecoration = "none"
+  }
 }
 Lex.prototype.css = function(){
    return (
@@ -47,18 +53,19 @@ Lex.prototype.sanitize = function(){
 var fgOnly = false
 Lex.prototype.mirc = function(){
   var char = this.char || " "
+  var out = ""
   if (this.opacity > 0) {
     if (fgOnly) {
-      return "\x03" + (this.fg&15) + char
+      return out + "\x03" + (this.fg&15) + char
     }
     if ((this.bg&15) < 10 && ! isNaN(parseInt(char))) {
-      return "\x03" + (this.fg&15) + ",0" + (this.bg&15) + char
+      return out +"\x03" + (this.fg&15) + ",0" + (this.bg&15) + char
     }
     else {
-      return "\x03" + (this.fg&15) + "," + (this.bg&15) + char
+      return out +"\x03" + (this.fg&15) + "," + (this.bg&15) + char
     }
   } else {
-      return "\x0f" + char
+      return out + "\x0f" + char
   }
 }
 Lex.prototype.assign = function (lex){
@@ -66,6 +73,7 @@ Lex.prototype.assign = function (lex){
   this.bg = lex.bg
   this.char = lex.char
   this.opacity = lex.opacity
+  this.underline = lex.underline
   this.build()
 }
 Lex.prototype.stamp = function (lex, brush){
@@ -73,6 +81,7 @@ Lex.prototype.stamp = function (lex, brush){
   if (brush.draw_bg && lex.opacity > 0) this.bg = lex.bg
   if (brush.draw_char) this.char = lex.char
   this.opacity = lex.opacity
+  this.underline = lex.underline
   this.build()
 }
 Lex.prototype.clone = function () {
@@ -101,6 +110,7 @@ Lex.prototype.clear = function(){
   this.fg = 0
   this.char = " "
   this.opacity = 0
+  this.underline = false
   this.build()
 }
 Lex.prototype.isClear = function(){

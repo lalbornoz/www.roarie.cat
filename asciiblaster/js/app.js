@@ -21,6 +21,7 @@ function init () {
   clipboard.load_from_location()
   palette.experimental(true)
   controls.experimental_palette.update(true)
+  document.getElementById("tools_block").style.width = ""
 }
 function build () {
   canvas.append(canvas_rapper)

@@ -239,6 +239,8 @@ var controls = (function(){
   controls.vertical.use = function(state){
     canvas.vertical = typeof state == "boolean" ? state : ! canvas.vertical
     controls.vertical.refresh()
+    document.getElementById("tools_block").style.width = ""
+    document.getElementById("ui_rapper").style.width = ""
   }
   controls.vertical.refresh = function(){
     if (canvas.vertical) {

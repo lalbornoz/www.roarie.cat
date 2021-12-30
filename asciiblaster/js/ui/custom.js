@@ -16,11 +16,11 @@ var custom = (function() {
           lex.bg = json.lines[y][x].bg; lex.fg = json.lines[y][x].fg
           lex.char = String.fromCharCode(json.lines[y][x].value)
           lex.opacity = 1
+          lex.underline = json.lines[y][x].u
         } else {
-          lex.bg = 99; lex.char = " "; lex.fg = 99; lex.opacity = 0
+          lex.bg = 99; lex.char = " "; lex.fg = 99; lex.opacity = 0; lex.underline = false
         }
 
-        lex.underline = json.lines[y][x].u
         lex.build()
         lex.span.style.maxWidth = "8px"
         return lex

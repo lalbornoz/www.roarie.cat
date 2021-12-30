@@ -24,6 +24,7 @@ var custom = (function(){
           lex.opacity = 0
 	}
         lex.build()
+        lex.span.style.maxWidth = "8px"
         return lex
       })
     } else if (!fromSelection) {

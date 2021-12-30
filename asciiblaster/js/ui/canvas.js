@@ -6,6 +6,7 @@ var canvas = current_canvas = (function(){
   var canvas = new Matrix (cols, rows, function(x,y){
     var lex = new Lex (x,y)
     lex.build()
+    lex.span.style.maxWidth = "8px"
     return lex
   })
 

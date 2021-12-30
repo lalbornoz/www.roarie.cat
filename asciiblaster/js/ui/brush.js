@@ -23,6 +23,7 @@ var brush = (function(){
 
     brush.forEach(function(lex, x, y){
 
+    lex.span.style.maxWidth = "8px"
       if (lex.bound) return
       lex.bound = true
       

@@ -27,19 +27,59 @@ var keys = (function(){
 
       switch (e.keyCode) {
         case 219: // [
-          if (current_tool.name != "text") {
-            e.preventDefault()
-            brush.contract(1)
-            brush.modified = false
-            check_if_lost_focus()
-          }
+          if (!e.ctrlKey) {
+            if (current_tool.name != "text") {
+              e.preventDefault()
+              brush.contract(1)
+              brush.modified = false
+              check_if_lost_focus()
+            }
+	  } else {
+            if (current_tool.name != "text") {
+              if (!e.altKey) {
+                if (!e.shiftKey) {
+                  e.preventDefault()
+                  canvas.resize(canvas.w - 1, canvas.h, 0)
+                  check_if_lost_focus()
+  	        } else {
+                  e.preventDefault()
+                  canvas.resize(canvas.w, canvas.h - 1, 0)
+                  check_if_lost_focus()
+	        }
+	      } else {
+                e.preventDefault()
+                canvas.resize(canvas.w - 1, canvas.h - 1, 0)
+                check_if_lost_focus()
+	      }
+            }
+	  }
           break
         case 221: // ]
-          if (current_tool.name != "text") {
-            e.preventDefault()
-            brush.expand(1)
-            brush.modified = false
-          }
+          if (!e.ctrlKey) {
+            if (current_tool.name != "text") {
+              e.preventDefault()
+              brush.expand(1)
+              brush.modified = false
+            }
+	  } else {
+            if (current_tool.name != "text") {
+              if (!e.altKey) {
+                if (!e.shiftKey) {
+                  e.preventDefault()
+                  canvas.resize(canvas.w + 1, canvas.h, 0)
+                  check_if_lost_focus()
+  	        } else {
+                  e.preventDefault()
+                  canvas.resize(canvas.w, canvas.h + 1, 0)
+                  check_if_lost_focus()
+  	        }
+              } else {
+                e.preventDefault()
+                canvas.resize(canvas.w + 1, canvas.h + 1, 0)
+                check_if_lost_focus()
+	      }
+	    }
+	  }
           break
         case 8: // backspace
           e.preventDefault()

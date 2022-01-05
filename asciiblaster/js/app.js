@@ -88,6 +88,10 @@ function initFloatableDivs() {
         localStorage.setItem("floatableDivs." + fd_currentDiv.id + ".top", (fd_mousePosition.y + offset[1]) + "px");
         fd_currentDiv.style.top = (fd_mousePosition.y + offset[1]) + "px";
         localStorage.setItem("floatableDivs." + fd_currentDiv.id, true);
+
+        if (fd_currentDiv.id === "canvas_wrapper") {
+          selection.reposition()
+        }
       }
     }, true);
   });

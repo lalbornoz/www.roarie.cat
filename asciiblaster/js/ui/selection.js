@@ -125,6 +125,8 @@ var selection = (function() {
     var w = width(aa, bb)
     var h = height(aa, bb)
 
+    cell_top += parseInt(document.getElementById("canvas_wrapper").style.top)
+    cell_left += parseInt(document.getElementById("canvas_wrapper").style.left)
     selector_el.style.top = (cell_top-1) + "px"
     selector_el.style.left = (cell_left-1) + "px"
     selector_el.style.width = (cell_width*w+1) + "px"

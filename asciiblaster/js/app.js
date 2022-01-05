@@ -82,6 +82,7 @@ function initFloatableDivs() {
           fd_currentDiv = div; fd_isLeftDown = true;
           offset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
           div.setAttribute("data-offset", JSON.stringify(offset));
+          document.body.style.cursor = "move";
         };
       } else if ((e.button === 2) && e.ctrlKey) {
         let div = e.currentTarget;
@@ -101,6 +102,8 @@ function initFloatableDivs() {
             fd_original_pos[1] = div.getBoundingClientRect().top;
             fd_original_mouse[0] = e.pageX;
             fd_original_mouse[1] = e.pageY;
+
+            document.body.style.cursor = "nwse-resize";
           };
         };
       };
@@ -110,8 +113,10 @@ function initFloatableDivs() {
       e.preventDefault();
       if (fd_isLeftDown && (e.button === 0)) {
         e.preventDefault(); fd_isLeftDown = false;
+        document.body.style.removeProperty("cursor");
       } else if (fd_isRightDown && (e.button === 2)) {
         e.preventDefault(); fd_isRightDown = false;
+        document.body.style.removeProperty("cursor");
       };
     }, true);
 

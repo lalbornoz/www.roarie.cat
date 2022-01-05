@@ -40,9 +40,10 @@ function initFloatableDivs() {
 
     div.style.border = "1px solid grey";
     div.style.margin = "4px";
+    fd_divOrigPosition[divName] = [div.style.left, div.style.top];
+
     if (divSetting === null) {
       div.style.position = "relative";
-      fd_divOrigPosition[divName] = [div.style.left, div.style.top];
     } else {
       div.style.left = localStorage.getItem("floatableDivs." + divName + ".left")
       div.style.position = localStorage.getItem("floatableDivs." + divName + ".position")
@@ -52,9 +53,13 @@ function initFloatableDivs() {
     div.addEventListener("mousedown", function(e) {
       if (e.ctrlKey && e.altKey) {
         let div = e.currentTarget;
+
         if (e.shiftKey) {
+          localStorage.setItem("floatableDivs." + div.id + ".left", fd_divOrigPosition[div.id][0]);
           div.style.left = fd_divOrigPosition[divName][0];
+          localStorage.setItem("floatableDivs." + div.id + ".position", "relative");
           div.style.position = "relative";
+          localStorage.setItem("floatableDivs." + div.id + ".top", fd_divOrigPosition[div.id][1]);
           div.style.top = fd_divOrigPosition[divName][1];
         } else {
           fd_currentDiv = div; fd_isDown = true;

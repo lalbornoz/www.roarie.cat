@@ -36,10 +36,18 @@ function initFloatableDivs() {
     "tools_wrapper",
   ].forEach(function (divName) {
     let div = document.getElementById(divName);
+    let divSetting = localStorage.getItem("floatableDivs." + divName)
+
     div.style.border = "1px solid grey";
     div.style.margin = "4px";
-    div.style.position = "relative";
-    fd_divOrigPosition[divName] = [div.style.left, div.style.top];
+    if (divSetting === null) {
+      div.style.position = "relative";
+      fd_divOrigPosition[divName] = [div.style.left, div.style.top];
+    } else {
+      div.style.left = localStorage.getItem("floatableDivs." + divName + ".left")
+      div.style.position = localStorage.getItem("floatableDivs." + divName + ".position")
+      div.style.top = localStorage.getItem("floatableDivs." + divName + ".top")
+    }
 
     div.addEventListener("mousedown", function(e) {
       if (e.ctrlKey && e.altKey) {
@@ -67,9 +75,13 @@ function initFloatableDivs() {
         fd_mousePosition = {x: event.clientX, y: event.clientY};
         const offset = JSON.parse(fd_currentDiv.getAttribute("data-offset"));
 
+        localStorage.setItem("floatableDivs." + fd_currentDiv.id + ".left", (fd_mousePosition.x + offset[0]) + "px");
         fd_currentDiv.style.left = (fd_mousePosition.x + offset[0]) + "px";
+        localStorage.setItem("floatableDivs." + fd_currentDiv.id + ".position", "absolute");
         fd_currentDiv.style.position = "absolute";
+        localStorage.setItem("floatableDivs." + fd_currentDiv.id + ".top", (fd_mousePosition.y + offset[1]) + "px");
         fd_currentDiv.style.top = (fd_mousePosition.y + offset[1]) + "px";
+        localStorage.setItem("floatableDivs." + fd_currentDiv.id, true);
       }
     }, true);
   });

@@ -30,6 +30,7 @@ function initFloatableDivs() {
 
   [
     "brush_container",
+    "canvas_wrapper",
     "textarea_mode",
     "tools_block",
     "tools_wrapper",
@@ -41,7 +42,7 @@ function initFloatableDivs() {
     fd_divOrigPosition[divName] = [div.style.left, div.style.top];
 
     div.addEventListener("mousedown", function(e) {
-      if (e.ctrlKey) {
+      if (e.ctrlKey && e.altKey) {
         let div = e.currentTarget;
         if (e.shiftKey) {
           div.style.left = fd_divOrigPosition[divName][0];

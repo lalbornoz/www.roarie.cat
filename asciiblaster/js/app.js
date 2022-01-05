@@ -31,6 +31,7 @@ function initFloatableDivs() {
   [
     "brush_container",
     "canvas_wrapper",
+    "custom_block",
     "textarea_mode",
     "tools_block",
     "tools_wrapper",
@@ -154,6 +155,7 @@ function init() {
     clipboard.save_png()
   })
   initFloatableDivs();
+  document.getElementById("custom_block").style.visibility = "hidden";
 }
 
 init()

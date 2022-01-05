@@ -45,6 +45,7 @@ var custom = (function() {
     wrapper.className = "custom"
     new_brush.append(wrapper)
     custom_wrapper.appendChild(wrapper)
+    document.getElementById("custom_block").style.visibility = "visible";
 
     // {{{ wrapper.addEventListener("click", function(e)
     wrapper.addEventListener("click", function(e) {
@@ -56,6 +57,9 @@ var custom = (function() {
           wrapper.removeChild(wrapper.firstChild)
         }
         wrapper.parentNode.removeChild(wrapper)
+        if (document.getElementById("custom_wrapper").children.length === 0) {
+          document.getElementById("custom_block").style.visibility = "hidden";
+        }
       }
     })
     // }}}

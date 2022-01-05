@@ -15,6 +15,66 @@ var canvas, tools, palette, ui, brush, mode
 var current_tool, current_filetool, current_canvas
 var mouse = { x: 0, y: 0 }
 
+var fd_currentDiv = null;
+var fd_divOrigPosition = {};
+var fd_isDown = false;
+var fd_mousePosition = {};
+
+// {{{ function initFloatableDivs()
+function initFloatableDivs() {
+  /*
+   * XXX
+   * https://jsfiddle.net/gcakuw50/2/
+   * https://stackoverflow.com/questions/24050738/javascript-how-to-dynamically-move-div-by-clicking-and-dragging#
+   */
+
+  [
+    "brush_container",
+    "textarea_mode",
+    "tools_block",
+    "tools_wrapper",
+  ].forEach(function (divName) {
+    let div = document.getElementById(divName);
+    div.style.border = "1px solid grey";
+    div.style.margin = "4px";
+    div.style.position = "relative";
+    fd_divOrigPosition[divName] = [div.style.left, div.style.top];
+
+    div.addEventListener("mousedown", function(e) {
+      if (e.ctrlKey) {
+        let div = e.currentTarget;
+        if (e.shiftKey) {
+          div.style.left = fd_divOrigPosition[divName][0];
+          div.style.position = "relative";
+          div.style.top = fd_divOrigPosition[divName][1];
+        } else {
+          fd_currentDiv = div; fd_isDown = true;
+          offset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
+          div.setAttribute("data-offset", JSON.stringify(offset));
+        };
+      };
+    }, true);
+
+    document.addEventListener("mouseup", function(e) {
+      fd_isDown = false;
+    }, true);
+
+    document.addEventListener("mousemove", function(e) {
+      if (fd_isDown && fd_currentDiv) {
+        e.preventDefault();
+
+        fd_mousePosition = {x: event.clientX, y: event.clientY};
+        const offset = JSON.parse(fd_currentDiv.getAttribute("data-offset"));
+
+        fd_currentDiv.style.left = (fd_mousePosition.x + offset[0]) + "px";
+        fd_currentDiv.style.position = "absolute";
+        fd_currentDiv.style.top = (fd_mousePosition.y + offset[1]) + "px";
+      }
+    }, true);
+  });
+}
+// }}}
+
 function bind() {
   canvas.bind(); palette.bind(); letters.bind(); brush.bind(); ui.bind(); keys.bind()
 
@@ -75,6 +135,7 @@ function init() {
   document.getElementById('save_png_el').addEventListener('mousedown', function(e) {
     clipboard.save_png()
   })
+  initFloatableDivs();
 }
 
 init()

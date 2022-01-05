@@ -29,8 +29,8 @@ var ui = (function() {
     ui.canvas_h.onBlur = keys.multi_numeral_blur(ui.canvas_h, function(h) { canvas.resize(canvas.w, h) })
     ui.canvas_h.raw_key = keys.arrow_key(function(h) { canvas.size_add(0, h) })
 
-    add_custom_el.addEventListener("click", function() { custom.clone() })
-    add_sel_custom_el.addEventListener("click", function() { custom.clone(fromSelection=true, fromFile=null) })
+    add_custom_el.addEventListener("click", function() { custom.clone(fromArray=null, fromSelection=false, fromFile=null, inhibitLocalStore=false) })
+    add_sel_custom_el.addEventListener("click", function() { custom.clone(fromArray=null, fromSelection=true, fromFile=null, inhibitLocalStore=false) })
   }
 
   // {{{ ui.clear = new BlurredTool(clear_el)
@@ -303,7 +303,7 @@ var ui = (function() {
     var reader = new FileReader();
     reader.onload = function(e) {
       var contents = e.target.result;
-      custom.clone(fromSelection=false,fromFile=contents)
+      custom.clone(fromArray=null, fromSelection=false, fromFile=contents, inhibitLocalStore=false)
     };
     reader.readAsText(file);
   }

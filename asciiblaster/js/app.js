@@ -234,6 +234,7 @@ function init() {
   })
   initFloatableDivs();
   document.getElementById("custom_block").style.visibility = "hidden";
+  custom.init();
 }
 
 init()

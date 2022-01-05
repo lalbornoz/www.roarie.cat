@@ -217,7 +217,7 @@ function build() {
   letters.append(letters_wrapper); letters.repaint("Basic Latin")
 
   ui.circle.focus()
-  brush.bg = brush.fg = 99; brush.opacity = 0
+  brush.bg = brush.fg = 10; brush.opacity = 1
   brush.generate(); brush.build()
 
   canvas.resize_wrapper()

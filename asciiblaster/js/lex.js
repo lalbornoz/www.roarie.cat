@@ -5,8 +5,8 @@ function Lex(x ,y) {
     this.span = x
   }
 
-  this.bg = colors.black; this.fg = colors.white; this.underline = false
-  this.char = " "; this.opacity = 1
+  this.bg = colors.transparent; this.fg = colors.transparent; this.underline = false
+  this.char = " "; this.opacity = 0
   this.focused = false
 }
 

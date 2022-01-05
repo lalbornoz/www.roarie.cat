@@ -217,10 +217,8 @@ var draw = (function() {
   // }}}
   // {{{ function stamp (canvas, brush, x, y, erasing)
   function stamp (canvas, brush, x, y, erasing) {
-    var hh = brush.w/2|0
     brush.forEach(function(lex, s, t) {
-      s = round( s + x-hh )
-      t = round( t + y-hh )
+      s = round(s + x - (brush.w/2|0)); t = round(t + y - (brush.h/2|0));
       if (s >= 0 && s < canvas.w && t >= 0 && t < canvas.h) {
         if (lex.opacity === 0 && lex.char === ' ' && lex.bg !== 99 && lex.fg !== 99) return;
         var aa = canvas.aa[t][s]

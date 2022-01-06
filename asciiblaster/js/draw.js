@@ -176,7 +176,7 @@ var draw = (function() {
     brush.forEach(function(lex, s, t) {
       s = round(s + x - (brush.w/2|0)); t = round(t + y - (brush.h/2|0));
       if (s >= 0 && s < canvas.w && t >= 0 && t < canvas.h) {
-        if (lex.opacity === 0 && lex.char === ' ' && lex.bg !== 99 && lex.fg !== 99) return;
+        if (lex.opacity === 0) return;
         var aa = canvas.aa[t][s]
         undo.save_lex(s, t, aa)
         if (erasing) {

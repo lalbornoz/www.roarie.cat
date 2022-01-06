@@ -129,50 +129,37 @@ var draw = (function() {
     last_point[1] = point[1]
   }
   // }}}
-  // {{{ function fill (lex, x, y)
-  function fill (lex, x, y) {
-    var q = [ [x,y] ]
-    var aa = canvas.aa
-    var target = aa[y][x].clone()
-    var n, w = 0, e = 0, j = 0
-    var kk = 0
-    // gets into a weird infinite loop if we don't break here.. :\
-    if (target.eq(lex)) { return }
-    LOOP: while (q.length) {
-      n = q.shift()
-      if (aa[n[1]][n[0]].ne(target)) {
-        continue LOOP
-      }
-      w = e = n[0]
-      j = n[1]
-      WEST: while (w > 0) {
-        if (aa[j][w-1].eq(target)) {
-          w = w-1
-        }
-        else {
-          break WEST
-        }
-      }
-      EAST: while (e < canvas.w-1) {
-        if (aa[j][e+1].eq(target)) {
-          e = e+1
-        }
-        else {
-          break EAST
-        }
-      }
-      for (var i = w; i <= e; i++) {
-        undo.save_lex(i, j, aa[j][i])
-        aa[j][i].assign(lex)
-        if (j > 0 && aa[j-1][i].eq(target)) {
-          q.push([ i, j-1 ])
-        }
-        if (j < canvas.h-1 && aa[j+1][i].eq(target)) {
-          q.push([ i, j+1 ])
-        }
-      }
-    }
-  }
+  // {{{ function fill (lex, x, y, withBg=false)
+  function fill (lex, x, y, withBg=false) {
+    var canvasCell = null, cell = null;
+    var fillColour = (withBg ? lex.fg : lex.bg);
+    var point = null, pointStack = [[y, x]], pointsDone = {};
+    var testChar = canvas.aa[y][x].char;
+    var testColour = {"bg":canvas.aa[y][x].bg, "fg":canvas.aa[y][x].fg};
+
+    while (pointStack.length > 0) {
+      point = pointStack.pop(); cell = canvas.aa[point[0]][point[1]];
+
+      if ((((cell.bg === testColour.bg) && (cell.char === testChar))
+      ||   ((cell.char === " ") && (cell.bg === testColour.bg)))
+      &&  (typeof(pointsDone[String(point)]) === "undefined")) {
+        canvasCell = canvas.aa[point[0]][point[1]];
+        undo.save_lex(point[1], point[0], canvasCell);
+        canvasCell.bg = canvasCell.fg = fillColour;
+        canvasCell.char = lex.char;
+        canvasCell.opacity = lex.opacity;
+        canvasCell.underline = lex.underline;
+        canvasCell.build();
+
+        if (point[1] > 0) { pointStack.push([point[0], point[1] - 1]); };
+        if (point[1] < (canvas.w - 1)) { pointStack.push([point[0], point[1] + 1]); };
+        if (point[0] > 0) { pointStack.push([point[0] - 1, point[1]]); };
+        if (point[0] < (canvas.h - 1)) { pointStack.push([point[0] + 1, point[1]]); };
+
+        pointsDone[String(point)] = true;
+      };
+    };
+  };
   // }}}
   // {{{ function line (lex, a, b, erasing)
   function line (lex, a, b, erasing) {

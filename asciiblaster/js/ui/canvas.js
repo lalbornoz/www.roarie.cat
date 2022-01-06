@@ -16,40 +16,31 @@ var canvas = current_canvas = (function() {
       // }}}
       // {{{ lex.span.addEventListener('mousedown', function(e)
       lex.span.addEventListener('mousedown', function(e) {
-        if (is_mobile) return; e.preventDefault();
-        current_canvas = canvas; dragging = true
+        if (!is_mobile) {
+          e.preventDefault(); current_canvas = canvas; dragging = true;
 
-        if (e.altKey) {
-          if (e.shiftKey) {
-            draw.copy_from(canvas, brush, floor(x-brush.w/2), floor(y-brush.h/2))
-            brush.mask(brush)
-            draw.set_last_point(e, point)
-          } else {
-            brush.load(lex)
-            brush.generate()
-            dragging = false
-          }
-          return
-        } else if (drawing) {
-          undo.new()
-          draw.down(e, lex, point)
-        } else if (selecting) {
-          selection.down(e, lex, point)
-        } else if (transforming) {
-          transform.down(e, lex, point)
-        } else if (filling) {
-          undo.new()
-          draw.fill(brush, x, y)
-        } else if (underlining) {
-          if (e.shiftKey) {
-            lex.underline = false
-          } else {
-            lex.underline = true
-          }
-          lex.build()
-        }
-        canvas.focus(x, y)
-      })
+          if (e.altKey) {
+            if (e.shiftKey) {
+              draw.copy_from(canvas, brush, floor(x - (brush.w / 2)), floor(y - (brush.h / 2)));
+              brush.mask(brush); draw.set_last_point(e, point);
+            } else {
+              brush.load(lex); brush.generate(); dragging = false;
+            }
+            return;
+          } else if (drawing) {
+            undo.new(); draw.down(e, lex, point);
+          } else if (selecting) {
+            selection.down(e, lex, point);
+          } else if (transforming) {
+            transform.down(e, lex, point);
+          } else if (filling) {
+            undo.new(); draw.fill(brush, x, y, withBg=(e.button === 2));
+          } else if (underlining) {
+            lex.underline = !e.shiftKey; lex.build();
+          };
+          canvas.focus(x, y);
+        };
+      });
       // }}}
       // {{{ lex.span.addEventListener("mousemove", function(e)
       lex.span.addEventListener("mousemove", function(e) {
@@ -104,12 +95,9 @@ var canvas = current_canvas = (function() {
         lex = canvas.aa[y][x]
         dragging = true
         if (drawing) {
-          undo.new()
-          draw.down(e, lex, point)
-        }
-        else if (filling) {
-          undo.new()
-          draw.fill(brush, x, y)
+          undo.new(); draw.down(e, lex, point);
+        } else if (filling) {
+          undo.new(); draw.fill(brush, x, y, withBg=false);
         }
         canvas.focus(x, y)
       })

@@ -3,7 +3,9 @@ var selection = (function() {
   var creating = false, moving = false, copying = false
   var exports = {}
   var selection_canvas = new Matrix(1, 1, function(x, y) {
-    var lex = new Lex(x, y); lex.build(); return lex
+    var lex = new Lex(x, y); lex.build();
+    lex.span.style.maxWidth = "8px";
+    return lex;
   })
   var selector_el = document.createElement("div")
 

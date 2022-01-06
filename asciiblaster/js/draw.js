@@ -96,38 +96,18 @@ var draw = (function() {
   }
   /// }}}
 
-  // {{{ function down (e, lex, point)
-  function down (e, lex, point) {
-    var w = canvas.w, h = canvas.h
-    erasing = (e.which == "3" || e.ctrlKey)
-    changed = true
+  // {{{ function down(e, lex, point)
+  function down(e, lex, point) {
+    var w = canvas.w, h = canvas.h;
+    changed = true; erasing = (e.which == "3" || e.ctrlKey);
+
     if (e.shiftKey) {
-      line (lex, last_point, point, erasing)
-      if (mirror_x) {
-        line(lex, [w-last_point[0], last_point[1]], [w-point[0], point[1]], erasing)
-      }
-      if (mirror_y) {
-        line(lex, [last_point[0], h-last_point[1]], [point[0], h-point[1]], erasing)
-      }
-      if (mirror_x && mirror_y) {
-        line(lex, [w-last_point[0], h-last_point[1]], [w-point[0], h-point[1]], erasing)
-      }
-    }
-    else {
-      stamp (canvas, brush, point[0], point[1], erasing)
-      if (mirror_x) {
-        stamp (canvas, brush, w-point[0], point[1], erasing)
-      }
-      if (mirror_y) {
-        stamp (canvas, brush, point[0], h-point[1], erasing)
-      }
-      if (mirror_x && mirror_y) {
-        stamp (canvas, brush, w-point[0], h-point[1], erasing)
-      }
-    }
-    last_point[0] = point[0]
-    last_point[1] = point[1]
-  }
+      line(lex, last_point, point, erasing);
+    } else {
+      stamp(canvas, brush, point[0], point[1], erasing);
+    };
+    last_point[0] = point[0]; last_point[1] = point[1];
+  };
   // }}}
   // {{{ function fill (lex, x, y, ignoreChar=false, withBg=false)
   function fill (lex, x, y, ignoreChar=false, withBg=false) {
@@ -160,35 +140,25 @@ var draw = (function() {
     };
   };
   // }}}
-  // {{{ function line (lex, a, b, erasing)
-  function line (lex, a, b, erasing) {
-    var len = dist(a[0], a[1], b[0], b[1])
-    var bw = 1
-    var x, y, i;
-    for (var i = 0; i <= len; i += bw) {
-      x = lerp(i / len, a[0], b[0])
-      y = lerp(i / len, a[1], b[1])
-      stamp (canvas, brush, x, y, erasing)
-    }
-  }
-  // }}}
-  // {{{ function move (e, lex, point)
-  function move (e, lex, point) {
-    var w = canvas.w, h = canvas.h
-    line(lex, last_point, point, erasing)
-    if (mirror_x) {
-      line(lex, [w-last_point[0], last_point[1]], [w-point[0], point[1]], erasing)
-    }
-    if (mirror_y) {
-      line(lex, [last_point[0], h-last_point[1]], [point[0], h-point[1]], erasing)
-    }
-    if (mirror_x && mirror_y) {
-      line(lex, [w-last_point[0], h-last_point[1]], [w-point[0], h-point[1]], erasing)
-    }
+  // {{{ function line(lex, a, b, erasing)
+  function line(lex, a, b, erasing) {
+    var bw = 1, i, x, y;
+    var len = dist(a[0], a[1], b[0], b[1]);
+    var w = canvas.w, h = canvas.h;
 
-    last_point[0] = point[0]
-    last_point[1] = point[1]
-  }
+    for (var i = 0; i <= len; i += bw) {
+      x = lerp(i / len, a[0], b[0]);
+      y = lerp(i / len, a[1], b[1]);
+      stamp(canvas, brush, x, y, erasing);
+    };
+  };
+  // }}}
+  // {{{ function move(e, lex, point)
+  function move(e, lex, point) {
+    var w = canvas.w, h = canvas.h;
+    line(lex, last_point, point, erasing);
+    last_point[0] = point[0]; last_point[1] = point[1];
+  };
   // }}}
   // {{{ function point (lex, x, y, erasing)
   function point (lex, x, y, erasing) {

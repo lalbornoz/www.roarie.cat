@@ -221,18 +221,40 @@ var ui = (function() {
   // }}}
 
   // {{{ ui.mirror_x = new BlurredCheckbox(mirror_x_checkbox)
-  ui.mirror_x = new BlurredCheckbox(mirror_x_checkbox)
+  ui.mirror_x = new BlurredCheckbox(mirror_x_checkbox);
   ui.mirror_x.use = function(state) {
-    window.mirror_x = typeof state == "boolean" ? state : ! window.mirror_x
-    this.update(window.mirror_x)
-  }
+    window.mirror_x = (typeof(state) === "boolean") ? state : !window.mirror_x
+    this.update(window.mirror_x);
+
+    let brush_ = brush.clone();
+    brush_.draw_bg = brush.draw_bg; brush_.draw_fg = brush.draw_fg;
+    brush_.draw_char = brush.draw_char;
+
+    for (let y = 0; y < brush_.h; y++) {
+      for (let x = Math.trunc((brush_.w - 1) / 2); x >= 0; x--) {
+        let x_ = Math.trunc(abs(x - (brush_.w - 1)));
+        [brush_.aa[y][x_], brush_.aa[y][x]] = [brush_.aa[y][x], brush_.aa[y][x_]];
+      };
+    };
+    brush.assign(brush_);
+  };
   // }}}
   // {{{ ui.mirror_y = new BlurredCheckbox(mirror_y_checkbox)
-  ui.mirror_y = new BlurredCheckbox(mirror_y_checkbox)
+  ui.mirror_y = new BlurredCheckbox(mirror_y_checkbox);
   ui.mirror_y.use = function(state) {
-    window.mirror_y = typeof state == "boolean" ? state : ! window.mirror_y
-    this.update(window.mirror_y)
-  }
+    window.mirror_y = (typeof(state) === "boolean") ? state : !window.mirror_y;
+    this.update(window.mirror_y);
+
+    let brush_ = brush.clone();
+    brush_.draw_bg = brush.draw_bg; brush_.draw_fg = brush.draw_fg;
+    brush_.draw_char = brush.draw_char;
+
+    for (let y = Math.trunc((brush_.h - 1) / 2); y >= 0; y--) {
+      let y_ = Math.trunc(abs(y - (brush_.h - 1)));
+      [brush_.aa[y_], brush_.aa[y]] = [brush_.aa[y], brush_.aa[y_]];
+    };
+    brush.assign(brush_);
+  };
   // }}}
 
   // {{{ ui.redo = new BlurredTool(redo_el)

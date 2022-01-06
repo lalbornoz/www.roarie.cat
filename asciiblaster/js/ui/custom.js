@@ -69,6 +69,7 @@ var custom = (function() {
           if (cell.fg === 99 && cell.bg === 99 && cell.opacity === 0) {
             cell.fg = 0; cell.bg = 1
           }
+          cell.span.style.maxWidth = "8px";
           return cell
         })
       } else {

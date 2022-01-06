@@ -15,7 +15,7 @@ margin-bottom:8px;
 
 body {
 background:#000;
-background-image:url('/asciiblaster/img/tile.jpg');
+background-image:url('/kaeditor/img/tile.jpg');
 font-size:16pt;
 font-family:times new roman;
 color:rgb(255,255,0);
@@ -111,7 +111,7 @@ color:#ff0!important
 
 /*
 .logo {
-background:url('/asciiblaster/img/rebomine_logo.gif');
+background:url('/kaeditor/img/rebomine_logo.gif');
 width:255px;
 height:107px;
 float:right;

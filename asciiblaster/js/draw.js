@@ -132,7 +132,7 @@ var draw = (function() {
   // {{{ function fill (lex, x, y, withBg=false)
   function fill (lex, x, y, withBg=false) {
     var canvasCell = null, cell = null;
-    var fillColour = (withBg ? lex.fg : lex.bg);
+    var fillColour = (withBg ? {"bg":lex.fg, "fg":lex.bg} : {"bg":lex.bg, "fg":lex.fg});
     var point = null, pointStack = [[y, x]], pointsDone = {};
     var testChar = canvas.aa[y][x].char;
     var testColour = {"bg":canvas.aa[y][x].bg, "fg":canvas.aa[y][x].fg};
@@ -145,10 +145,9 @@ var draw = (function() {
       &&  (typeof(pointsDone[String(point)]) === "undefined")) {
         canvasCell = canvas.aa[point[0]][point[1]];
         undo.save_lex(point[1], point[0], canvasCell);
-        canvasCell.bg = canvasCell.fg = fillColour;
-        canvasCell.char = lex.char;
+        canvasCell.bg = fillColour.bg; canvasCell.fg = fillColour.fg;
+        canvasCell.char = lex.char; canvasCell.underline = lex.underline;
         canvasCell.opacity = lex.opacity;
-        canvasCell.underline = lex.underline;
         canvasCell.build();
 
         if (point[1] > 0) { pointStack.push([point[0], point[1] - 1]); };

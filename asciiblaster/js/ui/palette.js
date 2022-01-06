@@ -16,22 +16,27 @@ var palette = (function() {
         e.preventDefault()
 
         if (e.shiftKey) {
-          palette_index = (palette_index+1) % palette_list.length
-          localStorage.setItem("ascii.palette", palette_index)
-          palette_fn = palette_list[palette_index]
-          palette.repaint()
-          return
-        }
+          palette_index = (palette_index + 1) % palette_list.length;
+          localStorage.setItem("ascii.palette", palette_index);
+          palette_fn = palette_list[palette_index];
+          palette.repaint();
+          return;
+        } else if (e.ctrlKey || e.which == 3) {
+          return;
+        };
 
-        if (e.ctrlKey || e.which == 3) return
-        if (brush.char == " " && lex.char == " ") {
-          brush.bg = lex.bg; brush.char = lex.char; brush.fg = lex.fg
-        } else if (lex.char != " ") {
-          brush.bg = lex.bg; brush.char = lex.char; brush.fg = lex.fg
-        } else if (lex.char === " " && brush.char !== " ") {
-          brush.bg = lex.bg; brush.char = lex.char; brush.fg = lex.fg
+        if ((brush.char === " ") && (lex.char === " ")) {
+          if (e.button === 2) {
+            brush.char = lex.char; brush.fg = lex.fg;
+          } else {
+            brush.char = lex.char; brush.bg = lex.bg;
+          };
+        } else if (lex.char !== " ") {
+          brush.char = lex.char; brush.bg = lex.fg; brush.fg = lex.bg;
+        } else if ((lex.char === " ") && (brush.char !== " ")) {
+          brush.char = lex.char; brush.bg = lex.bg;
         } else {
-          brush.bg = fillColor; brush.fg = lex.bg
+          brush.bg = fillColor; brush.fg = lex.bg;
         }
 
         brush.opacity = lex.opacity

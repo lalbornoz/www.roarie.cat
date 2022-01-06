@@ -34,7 +34,7 @@ var canvas = current_canvas = (function() {
           } else if (transforming) {
             transform.down(e, lex, point);
           } else if (filling) {
-            undo.new(); draw.fill(brush, x, y, withBg=(e.button === 2));
+            undo.new(); draw.fill(brush, x, y, ignoreChar=e.ctrlKey, withBg=(e.button === 2));
           } else if (underlining) {
             lex.underline = !e.shiftKey; lex.build();
           };
@@ -97,7 +97,7 @@ var canvas = current_canvas = (function() {
         if (drawing) {
           undo.new(); draw.down(e, lex, point);
         } else if (filling) {
-          undo.new(); draw.fill(brush, x, y, withBg=false);
+          undo.new(); draw.fill(brush, x, y, ignoreChar=false, withBg=false);
         }
         canvas.focus(x, y)
       })

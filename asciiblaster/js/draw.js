@@ -102,15 +102,15 @@ var draw = (function() {
     changed = true; erasing = (e.which == "3" || e.ctrlKey);
 
     if (e.shiftKey) {
-      line(lex, last_point, point, erasing);
+      line(lex, last_point, point, erasing, allowTransparent=(brush.bg === 99 ? true : false));
     } else {
-      stamp(canvas, brush, point[0], point[1], erasing);
+      stamp(canvas, brush, point[0], point[1], erasing, allowTransparent=(brush.bg === 99 ? true : false));
     };
     last_point[0] = point[0]; last_point[1] = point[1];
   };
   // }}}
-  // {{{ function fill (lex, x, y, ignoreChar=false, withBg=false)
-  function fill (lex, x, y, ignoreChar=false, withBg=false) {
+  // {{{ function fill(lex, x, y, ignoreChar=false, withBg=false)
+  function fill(lex, x, y, ignoreChar=false, withBg=false) {
     var canvasCell = null, cell = null;
     var fillColour = (withBg ? {"bg":lex.fg, "fg":lex.bg} : {"bg":lex.bg, "fg":lex.fg});
     var point = null, pointStack = [[y, x]], pointsDone = {};
@@ -140,8 +140,8 @@ var draw = (function() {
     };
   };
   // }}}
-  // {{{ function line(lex, a, b, erasing)
-  function line(lex, a, b, erasing) {
+  // {{{ function line(lex, a, b, erasing, allowTransparent=false)
+  function line(lex, a, b, erasing, allowTransparent=false) {
     var bw = 1, i, x, y;
     var len = dist(a[0], a[1], b[0], b[1]);
     var w = canvas.w, h = canvas.h;
@@ -149,14 +149,14 @@ var draw = (function() {
     for (var i = 0; i <= len; i += bw) {
       x = lerp(i / len, a[0], b[0]);
       y = lerp(i / len, a[1], b[1]);
-      stamp(canvas, brush, x, y, erasing);
+      stamp(canvas, brush, x, y, erasing, allowTransparent=allowTransparent);
     };
   };
   // }}}
   // {{{ function move(e, lex, point)
   function move(e, lex, point) {
     var w = canvas.w, h = canvas.h;
-    line(lex, last_point, point, erasing);
+    line(lex, last_point, point, erasing, allowTransparent=(brush.bg === 99 ? true : false));
     last_point[0] = point[0]; last_point[1] = point[1];
   };
   // }}}
@@ -171,12 +171,12 @@ var draw = (function() {
     last_point[1] = point[1]
   }
   // }}}
-  // {{{ function stamp (canvas, brush, x, y, erasing)
-  function stamp (canvas, brush, x, y, erasing) {
+  // {{{ function stamp (canvas, brush, x, y, erasing, allowTransparent=false)
+  function stamp (canvas, brush, x, y, erasing, allowTransparent=false) {
     brush.forEach(function(lex, s, t) {
       s = round(s + x - (brush.w/2|0)); t = round(t + y - (brush.h/2|0));
       if (s >= 0 && s < canvas.w && t >= 0 && t < canvas.h) {
-        if (lex.opacity === 0) return;
+        if ((lex.opacity === 0) && !allowTransparent) return;
         var aa = canvas.aa[t][s]
         undo.save_lex(s, t, aa)
         if (erasing) {

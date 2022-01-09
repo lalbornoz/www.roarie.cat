@@ -56,7 +56,7 @@ var ui = (function() {
   ui.circle = new Tool(circle_el)
   ui.circle.use = function() {
     brush.mask = draw.circle
-    brush.generate()
+    brush.mask(brush)
     drawing = true
     brush.modified = false
   }
@@ -67,15 +67,8 @@ var ui = (function() {
   // {{{ ui.cross = new Tool(cross_el)
   ui.cross = new Tool(cross_el)
   ui.cross.use = function() {
-    if (brush.mask == draw.cross) {
-      ui.cross.el.innerHTML = "ssoɹɔ"
-      brush.mask = draw.inverted_cross
-    }
-    else {
-      ui.cross.el.innerHTML = "cross"
-      brush.mask = draw.cross
-    }
-    brush.generate()
+    brush.mask = draw.cross
+    brush.mask(brush)
     drawing = true
     brush.modified = false
   }
@@ -137,7 +130,7 @@ var ui = (function() {
   ui.square = new Tool(square_el)
   ui.square.use = function() {
     brush.mask = draw.square
-    brush.generate()
+    brush.mask(brush)
     brush.modified = false
     drawing = true
   }
@@ -184,16 +177,16 @@ var ui = (function() {
   // }}}
 
   // {{{ ui.brush_h = new Lex(brush_h_el)
-  ui.brush_h = new Lex(brush_h_el)
+  ui.brush_h = new Lex(brush_h_el, null, defaultBg=1, defaultFg=0)
   // }}}
   // {{{ ui.brush_w = new Lex(brush_w_el)
-  ui.brush_w = new Lex(brush_w_el)
+  ui.brush_w = new Lex(brush_w_el, null, defaultBg=1, defaultFg=0)
   // }}}
   // {{{ ui.canvas_h = new Lex(canvas_h_el)
-  ui.canvas_h = new Lex(canvas_h_el)
+  ui.canvas_h = new Lex(canvas_h_el, null, defaultBg=1, defaultFg=0)
   // }}}
   // {{{ ui.canvas_w = new Lex(canvas_w_el)
-  ui.canvas_w = new Lex(canvas_w_el)
+  ui.canvas_w = new Lex(canvas_w_el, null, defaultBg=1, defaultFg=0)
   // }}}
 
   // {{{ ui.grid = new BlurredCheckbox(grid_el)

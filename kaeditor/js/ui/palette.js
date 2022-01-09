@@ -11,8 +11,8 @@ var palette = (function() {
   palette.bind = function() {
     palette.forEach(function(lex, x, y) {
       if (lex.bound) return; lex.bound = true
-      // {{{ lex.span.addEventListener('mousedown', function(e)
-      lex.span.addEventListener('mousedown', function(e) {
+      // {{{ lex.span.addEventListener("mousedown", function(e)
+      lex.span.addEventListener("mousedown", function(e) {
         e.preventDefault()
 
         if (e.shiftKey) {
@@ -21,40 +21,37 @@ var palette = (function() {
           palette_fn = palette_list[palette_index];
           palette.repaint();
           return;
-        } else if (e.ctrlKey || e.which == 3) {
-          return;
+        } else if (((brush.char == "▓") || (brush.char === "▒") || (brush.char === "░")) && (lex.char === " ")) {
+          brush.char = " ";
+          if (e.button === 2) { brush.bg = lex.bg; } else { brush.fg = lex.bg; };
+          palette.repaint();
+        } else if ((lex.char == "▓") || (lex.char === "▒") || (lex.char === "░")) {
+          brush.char = lex.char; brush.fg = lex.fg;
+          if (e.button === 2) { brush.bg = lex.fg; };
+          palette.repaint();
+        } else if (lex.char === " ") {
+          brush.char = lex.char;
+          if (e.button === 2) { brush.bg = lex.bg; } else { brush.fg = lex.bg; };
+          palette.repaint();
+        } else {
+          brush.char = lex.char; brush.fg = lex.fg;
         };
 
-        if ((brush.char === " ") && (lex.char === " ")) {
-          if (e.button === 2) {
-            brush.char = lex.char; brush.fg = lex.fg;
-          } else {
-            brush.char = lex.char; brush.bg = lex.bg;
-          };
-        } else if (lex.char !== " ") {
-          brush.char = lex.char; brush.bg = lex.fg; brush.fg = lex.bg;
-        } else if ((lex.char === " ") && (brush.char !== " ")) {
-          brush.char = lex.char; brush.bg = lex.bg;
+        brush.opacity = lex.opacity;
+        if (brush.bg !== 99) {
+          brush_wrapper.style.borderColor = css_reverse_lookup[brush.bg];
+          brush_wrapper.style.borderStyle = "solid";
+          brush_wrapper.style.borderWidth = "2px";
         } else {
-          brush.bg = fillColor; brush.fg = lex.bg;
-        }
-
-        brush.opacity = lex.opacity
-        if (!brush.modified) brush.generate();
-        if (filling || e.ctrlKey) fillColor = lex.bg;
-        letters.repaint()
-      })
-      // }}}
-      // {{{ lex.span.addEventListener('contextmenu', function(e)
-      lex.span.addEventListener('contextmenu', function(e) {
-        e.preventDefault()
-
-        if (x <= 1) return;
-        fillColor = y ? lex.fg : lex.bg
-        palette.repaint()
-        brush.char = lex.char; brush.fg = lex.fg; brush.opacity = lex.opacity
-        brush.generate()
-        brush_wrapper.style.borderColor = css_reverse_lookup[fillColor]
+          brush_wrapper.style.borderColor = "rgba(0, 0, 0, 0)";
+          brush_wrapper.style.borderStyle = "solid";
+          brush_wrapper.style.borderWidth = "2px";
+        };
+        if (!brush.modified) {
+          brush.rebuild();
+          brush.mask(brush);
+        };
+        letters.repaint();
       })
       // }}}
     })
@@ -79,7 +76,7 @@ var palette = (function() {
         if (y < 2) {
           lex.bg = palette_fn(x>>1); lex.fg = palette_fn(x>>1)
         } else {
-          lex.bg = fillColor; lex.fg = palette_fn(x>>1)
+          lex.bg = brush.bg; lex.fg = palette_fn(x>>1)
         }
         lex.char = palette.chars[y]; lex.opacity = 1
       } else {
@@ -91,7 +88,6 @@ var palette = (function() {
   }
   // }}}
 
-  brush_wrapper.style.borderColor = css_reverse_lookup[fillColor]
   palette.chars = "  " + dither.a + dither.b + dither.c
   palette.repaint()
 

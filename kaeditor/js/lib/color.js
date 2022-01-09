@@ -14,8 +14,6 @@ var purple_names = ("dark-blue purple magenta red").split(" ")
 var red_names = ("black dark-red red").split(" ")
 var yellow_names = ("black orange yellow white").split(" ")
 
-var fillColor = 1  // black
-
 function all_hue (n) { return colors[all_color_hue_order[mod(n, 16)|0]] }
 function all_inv_hue (n) { return colors[all_color_inv_order[mod(n, 16)|0]] }
 function blue (n) { return colors[blue_names[mod(n, 3)|0]] }

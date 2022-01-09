@@ -36,6 +36,8 @@ function cosp(n) { return (1+Math.cos(n))/2 } // cos^2
 function cot(n) { return 1/tan(n) }
 function csc(n) { return 1/sin(n) }
 function deg(n) { return n*180/PI }
+function distance_rect(x, y, ratio) { return Math.sqrt((Math.pow(y * ratio, 2)) + Math.pow(x, 2)); };
+function distance_square(x, y, ratio) { return Math.sqrt((Math.pow(y * ratio, 2)) + Math.pow(x * ratio, 2)); };
 function dist(x0, y0, x1, y1) { return sqrt(pow(x1-x0,2)+pow(y1-y0,2)) }
 function exp(n) { return Math.exp(n) }
 function fit(d, x, y) { rgbpixel(d,x*actual_w/w,y*actual_h/h) }

@@ -71,6 +71,7 @@ function initFloatableDivs() {
       if ((e.button === 0) && e.ctrlKey && e.altKey) {
         let div = e.currentTarget;
 
+        e.preventDefault(); e.stopPropagation();
         if (e.shiftKey) {
           localStorage.setItem("floatableDivs." + div.id + ".left", fd_divOrigPosition[div.id][0]);
           div.style.left = fd_divOrigPosition[divName][0];
@@ -87,6 +88,7 @@ function initFloatableDivs() {
       } else if ((e.button === 2) && e.ctrlKey) {
         let div = e.currentTarget;
 
+        e.preventDefault(); e.stopPropagation();
         if (div.id !== "canvas_wrapper") {
           if (e.altKey) {
             localStorage.setItem("floatableDivs." + div.id + ".width", fd_divOrigSize[div.id][0] + "px");
@@ -96,8 +98,8 @@ function initFloatableDivs() {
           } else {
             fd_currentDiv = div; fd_isRightDown = true;
 
-            fd_original_size[0] = parseFloat(getComputedStyle(div, null).getPropertyValue('width').replace('px', ''));
-            fd_original_size[1] = parseFloat(getComputedStyle(div, null).getPropertyValue('height').replace('px', ''));
+            fd_original_size[0] = parseFloat(getComputedStyle(div, null).getPropertyValue("width").replace("px", ""));
+            fd_original_size[1] = parseFloat(getComputedStyle(div, null).getPropertyValue("height").replace("px", ""));
             fd_original_pos[0] = div.getBoundingClientRect().left;
             fd_original_pos[1] = div.getBoundingClientRect().top;
             fd_original_mouse[0] = e.pageX;
@@ -110,12 +112,13 @@ function initFloatableDivs() {
     }, true);
 
     document.addEventListener("mouseup", function(e) {
-      e.preventDefault();
       if (fd_isLeftDown && (e.button === 0)) {
-        e.preventDefault(); fd_isLeftDown = false;
+        e.preventDefault(); e.stopPropagation();
+        fd_isLeftDown = false;
         document.body.style.removeProperty("cursor");
       } else if (fd_isRightDown && (e.button === 2)) {
-        e.preventDefault(); fd_isRightDown = false;
+        e.preventDefault(); e.stopPropagation();
+        fd_isRightDown = false;
         document.body.style.removeProperty("cursor");
       };
     }, true);
@@ -127,7 +130,7 @@ function initFloatableDivs() {
     document.addEventListener("mousemove", function(e) {
       if (fd_currentDiv) {
         if (fd_isLeftDown) {
-          e.preventDefault();
+          e.preventDefault(); e.stopPropagation();
 
           fd_mousePosition = {x: event.clientX, y: event.clientY};
           const offset = JSON.parse(fd_currentDiv.getAttribute("data-offset"));
@@ -144,7 +147,7 @@ function initFloatableDivs() {
             selection.reposition()
           };
         } else if (fd_isRightDown) {
-          e.preventDefault();
+          e.preventDefault(); e.stopPropagation();
 
           /*
            * XXX
@@ -175,8 +178,8 @@ function initFloatableDivs() {
 function bind() {
   canvas.bind(); palette.bind(); letters.bind(); brush.bind(); ui.bind(); keys.bind()
 
-  // {{{ window.addEventListener('mouseup', function(e)
-  window.addEventListener('mouseup', function(e) {
+  // {{{ window.addEventListener("mouseup", function(e)
+  window.addEventListener("mouseup", function(e) {
     dragging = erasing = false
     var ae = document.activeElement
     if (ae.id === "filename_el") { return }
@@ -196,13 +199,13 @@ function bind() {
     dragging = false
   })
   // }}}
-  // {{{ window.addEventListener('mousedown', function(e) {}
-  window.addEventListener('mousedown', function(e) {})
+  // {{{ window.addEventListener("mousedown", function(e) {}
+  window.addEventListener("mousedown", function(e) {})
   // }}}
-  // {{{ document.addEventListener('DOMContentLoaded', function()
-  document.addEventListener('DOMContentLoaded', function() {
+  // {{{ document.addEventListener("DOMContentLoaded", function()
+  document.addEventListener("DOMContentLoaded", function() {
     if (is_desktop) { cursor_input.focus() }
-    document.body.classList.remove('loading')
+    document.body.classList.remove("loading")
   })
   // }}}
   // {{{ window.onbeforeunload = function()
@@ -213,23 +216,33 @@ function bind() {
 }
 
 function build() {
-  canvas.append(canvas_wrapper); brush.append(brush_wrapper); palette.append(palette_wrapper)
+  canvas.append(canvas_wrapper); brush.append(brush_wrapper);
+  brush.bg = 99; brush.fg = 10; brush.opacity = 1
+  palette.append(palette_wrapper)
   letters.append(letters_wrapper); letters.repaint("Basic Latin")
 
   ui.circle.focus()
-  brush.bg = brush.fg = 10; brush.opacity = 1
-  brush.generate(); brush.build()
+  brush.mask(brush); brush.build()
 
   canvas.resize_wrapper()
+  if (brush.bg !== 99) {
+    brush_wrapper.style.borderColor = css_reverse_lookup[brush.bg];
+    brush_wrapper.style.borderStyle = "solid";
+    brush_wrapper.style.borderWidth = "2px";
+  } else {
+    brush_wrapper.style.borderColor = "rgba(0, 0, 0, 0)";
+    brush_wrapper.style.borderStyle = "solid";
+    brush_wrapper.style.borderWidth = "2px";
+  };
 }
 
 function init() {
-  document.body.classList.remove('loading_tmp')
+  document.body.classList.remove("loading_tmp")
   build(); bind()
   palette.experimental(true)
   ui.experimental_palette.update(true)
   document.getElementById("tools_block").style.width = ""
-  document.getElementById('save_png_el').addEventListener('mousedown', function(e) {
+  document.getElementById("save_png_el").addEventListener("mousedown", function(e) {
     clipboard.save_png()
   })
   initFloatableDivs();

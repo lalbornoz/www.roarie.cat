@@ -1,59 +1,225 @@
-<!-- https://www.roarie.cat/kaeditor/licensing/LNT-1.txt -->
-<meta charset="UTF-8">
-<link rel="stylesheet" href="../css/sally.css" type="text/css" charset="utf-8" />
-<link rel="stylesheet" href="../css/ak.css" type="text/css" charset="utf-8" />
-<link rel="stylesheet" href="../css/nitelite.css" type="text/css" charset="utf-8" />
-<style>
-body { font-family: 'FixedsysExcelsior301Regular'; }
-a:nth-of-type(2n+1), a { color: #0f0; }
-a:nth-of-type(2n+2), a { color: #ff0; }
-</style>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- {{{ <style> -->
+    <style>
+      @font-face {
+          font-family: 'FixedsysExcelsior301Regular';
+          src: url('../fonts/fsex300-webfont.eot');
+          src: url('../fonts/fsex300-webfont.eot?#iefix') format('embedded-opentype'),
+               url('../fonts/fsex300-webfont.woff') format('woff'),
+               url('../fonts/fsex300-webfont.ttf') format('truetype'),
+               url('../fonts/fsex300-webfont.svg#FixedsysExcelsior301Regular') format('svg');
+          font-weight: normal;
+          font-style: normal;
+      }
 
-<br><br>
-<center>
+      body {
+        background-image: url('/kaeditor/img/tile.jpg');
+        font-family: 'FixedsysExcelsior301Regular';
+      }
 
-<table border=35 cellpadding=10>
-<tr><td style="background: rgba(0,0,100,0.5)">
-<h1>www.roarie.cat/kaeditor documentation</h1>
-<span style="white-space: pre; color: white;">
-<u>On UI elements (from top to bottom; left to right: canvas; palette, brush, tools, menu)</u>
-&lt;CTRL&gt; &lt;ALT&gt; &lt;LMB&gt;             (while dragging) make UI element floatable &amp; move
-&lt;CTRL&gt; &lt;RMB&gt;                   (while dragging) resize UI element
-&lt;CTRL&gt; &lt;ALT&gt; &lt;SHIFT&gt; &lt;LMB&gt;     restore UI element as non-floating and at its original position
-&lt;CTRL&gt; &lt;ALT&gt; &lt;RMB&gt;             restore UI element size
+      div#help_container {
+        display:          flex;
+        justify-content:  center;
+      }
 
-<u>These keyboard commands work in brush mode (square, circle, cross):</u>
-[                              brush smaller
-]                              brush bigger
-&lt;CTRL&gt; [                       decrease canvas width
-&lt;CTRL&gt; ]                       increase canvas width
-&lt;CTRL&gt; &lt;ALT&gt; [                 decrease canvas height and width
-&lt;CTRL&gt; &lt;ALT&gt; ]                 increase canvas height and width
-&lt;CTRL&gt; &lt;SHIFT&gt; [               decrease canvas height
-&lt;CTRL&gt; &lt;SHIFT&gt; ]               increase canvas height
+      span#help > h1 {
+        text-align:       center;
+        font-size:        3em;
+      }
 
-<u>On brush:</u>
-&lt;CTRL&gt; &lt;LMB&gt;                   erase cell
+      /* {{{ span.colour* */
+      span.colour1 {
+        color:            #55cdfc;
+      }
+      span.colour2 {
+        color:            #ffffff;
+      }
+      span.colour3 {
+        color:            #f7a8b8;
+      }
+      /* }}} */
+      /* {{{ table, td, th.* */
+      table {
+        background:       rgba(0, 0, 100, 0.5);
+        border:           25px outset #c0c0c0;
+        padding:          2em;
+        text-align:       left;
+      }
+      td {
+        padding-right:    1em;
+      }
+      th.category {
+        color:            #00ffff;
+        padding-top:      0.75em;
+        padding-bottom:   0.75em;
+        text-align:       left;
+        text-decoration:  underline;
+      }
+      td.hotkey {
+        color:            #009393;
+      }
+      td.description {
+        color:            white;
+      }
+      /* }}} */
+    </style>
+    <!-- }}} -->
+    <title>kaeditor! documentation!</title>
+  </head>
+  <body>
+    <div id="help_container">
+      <span id="help">
+        <h1>
+          <span class="colour1">www.roarie.cat</span><span class="colour2">/kaeditor/</span><span class="colour3">documentation</span>
+        </h1>
+        <table cellpadding=0 cellspacing=0>
+          <!-- {{{ On UI elements (from top to bottom; left to right: canvas; palette, brush, tools, menu) -->
+          <th class="category">On UI elements (from top to bottom; left to right: canvas; palette, brush, tools, menu)</th>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; &lt;ALT&gt; &lt;LMB&gt;</td>
+            <td class="description">(while dragging) Make UI element floatable &amp; move</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; &lt;RMB&gt;</td>
+            <td class="description">(while dragging) Resize UI element</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; &lt;ALT&gt; &lt;SHIFT&gt; &lt;LMB&gt;</td>
+            <td class="description">Restore UI element as non-floating and at its original position</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; &lt;ALT&gt; &lt;RMB&gt;</td>
+            <td class="description">Restore original UI element size</td>
+          </tr>
+          <!-- }}} -->
+          <!-- {{{ These keyboard commands work in brush mode (square, circle, cross): -->
+          <th class="category">These keyboard commands work in brush mode (square, circle, cross):</th>
+          <tr>
+            <td class="hotkey">[</td>
+            <td class="description">Increase brush height and width</td>
+          </tr>
+          <tr>
+            <td class="hotkey">]</td>
+            <td class="description">Increase brush height and width</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; [</td>
+            <td class="description">Decrease canvas width</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; ]</td>
+            <td class="description">Increase canvas width</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; &lt;ALT&gt; [</td>
+            <td class="description">Decrease canvas height and width</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; &lt;ALT&gt; ]</td>
+            <td class="description">Increase canvas height and width</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; &lt;SHIFT&gt; [</td>
+            <td class="description">Decrease canvas height</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; &lt;SHIFT&gt; ]</td>
+            <td class="description">Increase canvas height</td>
+          </tr>
+          <!-- }}} -->
+          <!-- {{{ On brush: -->
+          <th class="category">On brush:</th>
+          <tr>
+            <td class="hotkey">&lt;LMB&gt;</td>
+            <td class="description">Erase cell</td>
+          </tr>
+          <!-- }}} -->
+          <!-- {{{ On canvas: -->
+          <th class="category">On canvas:</th>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; &lt;LMB&gt;</td>
+            <td class="description">Draw with foreground colour</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; &lt;RMB&gt;</td>
+            <td class="description">Draw with background colour</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;SHIFT&gt; &lt;LMB&gt;</td>
+            <td class="description">Draw line from last position to cursor</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;ALT&gt; &lt;LMB&gt;</td>
+            <td class="description">Set foreground colour from cell at cursor position</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;ALT&gt; &lt;RMB&gt;</td>
+            <td class="description">Set foreground colour from cell at cursor position</td>
+          </tr>
+          <!-- }}} -->
+          <!-- {{{ On custom brush: -->
+          <th class="category">On custom brush:</th>
+          <tr>
+            <td class="hotkey">&lt;SHIFT&gt; &lt;LMB&gt;</td>
+            <td class="description">Delete custom brush</td>
+          </tr>
+          <!-- }}} -->
+          <!-- {{{ On palette: -->
+          <th class="category">On palette:</th>
+          <tr>
+            <td class="hotkey">&lt;LMB&gt;</td>
+            <td class="description">Set foreground colour</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;RMB&gt;</td>
+            <td class="description">Set background colour</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;CTRL&gt; &lt;LMB&gt;</td>
+            <td class="description">Set background colour for block elements in palette</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;LMB&gt; (on block element)</td>
+            <td class="description">Set foreground to block element with combined colours</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;RMB&gt; (on block element)</td>
+            <td class="description">Set foreground to block element with combined colours (reversed)</td>
+          </tr>
+          <!-- }}} -->
+          <!-- {{{ Fill tool: -->
+          <th class="category">Fill tool:</th>
+          <tr>
+            <td class="hotkey">&lt;LMB&gt;</td>
+            <td class="description">Fill with foreground colour</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;RMB&gt;</td>
+            <td class="description">Fill with background colour</td>
+          </tr>
+          <!-- }}} -->
+          <!-- {{{ Underline tool: -->
+          <th class="category">Underline tool:</th>
+          <tr>
+            <td class="hotkey">&lt;LMB&gt;</td>
+            <td class="description">Set underlined attribute</td>
+          </tr>
+          <tr>
+            <td class="hotkey">&lt;SHIFT&gt; &lt;LMB&gt;</td>
+            <td class="description">Remove underlined attribute</td>
+          </tr>
+          <!-- }}} -->
+        </table>
+      </span>      
+    </div>
+  </body>
+</html>
 
-<u>On canvas:</u>
-&lt;CTRL&gt; &lt;LMB&gt;                   draw with bg color
-&lt;SHIFT&gt; &lt;LMB&gt;                  draw line from last position
-&lt;ALT&gt; &lt;LMB&gt;                    fill brush with sampled color
-&lt;ALT&gt; &lt;SHIFT&gt; &lt;LMB&gt;            copy canvas to brush
-
-<u>On custom brush:</u>
-&lt;SHIFT&gt; &lt;LMB&gt;                  delete stamp
-
-<u>On palette:</u>
-&lt;LMB&gt;                          fill w/ bg color
-&lt;RMB&gt;                          fill w/ fg color
-&lt;CTRL&gt; &lt;LMB&gt;                   fill w/ bg color and ignore char
-&lt;CTRL&gt; &lt;RMB&gt;                   fill w/ fg color and ignore char
-
-<u>Fill tool:</u>
-&lt;LMB&gt;                          set bg color
-&lt;RMB&gt;                          set fg color
-
-<u>Underline tool:</u>
-&lt;SHIFT&gt; &lt;LMB&gt;                  remove underlined attribute
-
+<!--
+  vim:expandtab sw=2 ts=2 tw=0
+  -->

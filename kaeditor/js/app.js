@@ -191,14 +191,6 @@ function bind() {
     }
   })
   // }}}
-  // {{{ window.addEventListener("touchend", function()
-  window.addEventListener("touchend", function() {
-    if (current_tool.name === "text") {
-      if (is_desktop) cursor_input.focus()
-    }
-    dragging = false
-  })
-  // }}}
   // {{{ window.addEventListener("mousedown", function(e) {}
   window.addEventListener("mousedown", function(e) {})
   // }}}

@@ -16,33 +16,31 @@ var canvas = current_canvas = (function() {
       // }}}
       // {{{ lex.span.addEventListener("mousedown", function(e)
       lex.span.addEventListener("mousedown", function(e) {
-        if (!is_mobile) {
-          e.preventDefault(); current_canvas = canvas; dragging = true;
+        e.preventDefault(); current_canvas = canvas; dragging = true;
 
-          if (e.altKey) {
-            if (e.button === 2) {
-              brush.bg = lex.bg; brush.mask(brush); dragging = false;
-            } else {
-              brush.fg = lex.bg; brush.mask(brush); dragging = false;
-            };
-          } else if (drawing) {
-            undo.new(); draw.down(e, lex, point);
-          } else if (selecting) {
-            selection.down(e, lex, point);
-          } else if (transforming) {
-            transform.down(e, lex, point);
-          } else if (filling) {
-            undo.new(); draw.fill(brush, x, y, ignoreChar=e.ctrlKey, withBg=(e.button === 2));
-          } else if (underlining) {
-            lex.underline = !e.shiftKey; lex.build();
+        if (e.altKey) {
+          if (e.button === 2) {
+            brush.bg = lex.bg; brush.mask(brush); dragging = false;
+          } else {
+            brush.fg = lex.bg; brush.mask(brush); dragging = false;
           };
-          canvas.focus(x, y);
+        } else if (drawing) {
+          undo.new(); draw.down(e, lex, point);
+        } else if (selecting) {
+          selection.down(e, lex, point);
+        } else if (transforming) {
+          transform.down(e, lex, point);
+        } else if (filling) {
+          undo.new(); draw.fill(brush, x, y, ignoreChar=e.ctrlKey, withBg=(e.button === 2));
+        } else if (underlining) {
+          lex.underline = !e.shiftKey; lex.build();
         };
+        canvas.focus(x, y);
       });
       // }}}
       // {{{ lex.span.addEventListener("mousemove", function(e)
       lex.span.addEventListener("mousemove", function(e) {
-        if (!is_mobile && dragging) {
+        if (dragging) {
           [mouse.x, mouse.y] = [x, y];
           if (drawing) {
             draw.move(e, lex, point);
@@ -59,46 +57,6 @@ var canvas = current_canvas = (function() {
       });
       // }}}
     });
-
-    if (is_mobile) {
-      // {{{ canvas.wrapper.addEventListener("touchmove", function(e)
-      canvas.wrapper.addEventListener("touchmove", function(e) {
-        var lex, point, x, y;
-
-        e.preventDefault();
-        if (dragging) {
-          x = (e.touches[0].pageX - canvas.wrapper.offsetTop) / canvas.aa[0][0].span.offsetWidth;
-          x = ~~clamp(x, 0, canvas.aa[0].length - 1);
-          y = (e.touches[0].pageY - canvas.wrapper.offsetTop) / canvas.aa[0][0].span.offsetHeight;
-          y = ~~clamp(y, 0, canvas.aa.length - 1);
-          [lex, point] = [canvas.aa[y][x], [x, y]];
-          if (drawing) {
-            draw.move(e, lex, point);
-          };
-          canvas.focus(x, y);
-        };
-      });
-      // }}}
-      // {{{ canvas.wrapper.addEventListener("touchstart", function(e)
-      canvas.wrapper.addEventListener("touchstart", function(e) {
-        var lex, point, x, y;
-
-        e.preventDefault()
-        x = (e.touches[0].pageX - canvas.wrapper.offsetTop) / canvas.aa[0][0].span.offsetWidth;
-        x = ~~clamp(x, 0, canvas.aa[0].length - 1);
-        y = (e.touches[0].pageY - canvas.wrapper.offsetTop) / canvas.aa[0][0].span.offsetHeight;
-        y = ~~clamp(y, 0, canvas.aa.length - 1);
-        [dragging, lex, point] = [true, canvas.aa[y][x], [x, y]];
-
-        if (drawing) {
-          undo.new(); draw.down(e, lex, point);
-        } else if (filling) {
-          undo.new(); draw.fill(brush, x, y, ignoreChar=false, withBg=false);
-        };
-        canvas.focus(x, y);
-      });
-      // }}}
-    };
   };
 
   // {{{ canvas.resize = function(w, h, no_undo)

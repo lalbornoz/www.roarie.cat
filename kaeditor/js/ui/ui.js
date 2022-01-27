@@ -13,7 +13,6 @@ var ui = (function() {
      ui.canvas_w, ui.canvas_h].forEach(function(lex) {
       lex.span.addEventListener('mousedown', function(e) {
         lex.focus()
-        if (is_mobile) cursor_input.focus()
       })
     });
 

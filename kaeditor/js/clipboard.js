@@ -32,27 +32,26 @@ var clipboard = (function () {
     import_colorcode: function (data, no_undo) {
       var json = colorcode.to_json(data, {fg:0, bg:1})
 
-      if (!no_undo) undo.new()
-      if (!no_undo) undo.save_rect(0,0, canvas.w, canvas.h)
+      undo.newUndo();
       if (json.w !== canvas.w || json.h !== canvas.h) {
-        if (!no_undo) undo.save_size(canvas.w, canvas.h)
+        // XXX undo if (!no_undo) undo.save_size(canvas.w, canvas.h)
         canvas.resize(json.w, json.h, true)
       }
-      canvas.clear()
 
       for (var y = 0, line; line = json.lines[y]; y++) {
-        var row = canvas.aa[y]
+        let row = canvas.aa[y];
         for (var x = 0, char; char = line[x]; x++) {
-          var lex = row[x]
-          lex.char = String.fromCharCode(char.value)
-          lex.underline = char.u
-          lex.fg = char.fg
-          lex.bg = char.bg
-          lex.opacity = 1
-          lex.build()
+          let lex = row[x];
+          undo.push(
+            char.bg, char.fg, String.fromCharCode(char.value), char.u,
+            canvas, x, y);
+          [lex.char, lex.underline] = [String.fromCharCode(char.value), char.u];
+          [lex.bg, lex.fg] = [char.bg, char.fg];
+          lex.build();
         }
       }
 
+      changed = true;
       current_filetool && current_filetool.blur()
     },
     // }}}

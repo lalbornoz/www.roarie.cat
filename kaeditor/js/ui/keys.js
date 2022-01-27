@@ -72,9 +72,9 @@ var keys = (function() {
       // {{{ case  8: // backspace
       case  8: // backspace
         e.preventDefault();
-        if (current_canvas === canvas) undo.new();
         current_canvas.focus_add(-1, 0);
-        if (current_canvas === canvas) undo.save_focused_lex();
+        undo.newUndo();
+        undo.push(focused.bg, focused.fg, " ", focused.underline, canvas, current_canvas.focus_x, current_canvas.focus_y);
         focused.char = " "; focused.build();
         return;
       // }}}
@@ -104,13 +104,13 @@ var keys = (function() {
       // {{{ case 89: // y
       case 89: // y
         if (!e.ctrlKey && !e.metaKey) break;
-        e.preventDefault(); undo.redo(); break;
+        e.preventDefault(); undo.redo(canvas); break;
       // }}}
       // {{{ case 90: // z
       case 90: // z
         if (!e.ctrlKey && !e.metaKey) break;
         e.preventDefault();
-        if (e.shiftKey) undo.redo(); else undo.undo(); break;
+        if (e.shiftKey) undo.redo(canvas); else undo.undo(canvas); break;
       // }}}
       };
     });
@@ -125,10 +125,8 @@ var keys = (function() {
 
       if (focused && char) {
         var x = focused.x, y = focused.y;
-
-        if (current_canvas === canvas) {
-          undo.new(); undo.save_focused_lex();
-        };
+        undo.newUndo();
+        undo.push(focused.bg, focused.fg, char, focused.underline, canvas, x, y);
         var moving = focused.key(char, e.keyCode);
         if (!moving || !("y" in focused && "x" in focused)) return;
         current_canvas.focus_add(1, 0);

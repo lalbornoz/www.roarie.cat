@@ -33,7 +33,7 @@ var letters = (function() {
     letters.forEach(function(lex, x, y) {
       var char = chars[i++];
       [lex.bg, lex.fg] = [brush.bg, brush.fg];
-      lex.char = char; lex.opacity = 1;
+      lex.char = char;
       lex.build();
     });
   };

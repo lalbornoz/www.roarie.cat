@@ -37,7 +37,6 @@ var palette = (function() {
           brush.char = lex.char; brush.fg = lex.fg;
         };
 
-        brush.opacity = lex.opacity;
         if (brush.bg !== 99) {
           brush_wrapper.style.borderColor = css_reverse_lookup[brush.bg];
           brush_wrapper.style.borderStyle = "solid";
@@ -78,9 +77,9 @@ var palette = (function() {
         } else {
           lex.bg = brush.bg; lex.fg = palette_fn(x>>1)
         }
-        lex.char = palette.chars[y]; lex.opacity = 1
+        lex.char = palette.chars[y];
       } else {
-        lex.bg = lex.fg = 99; lex.char = " "; lex.opacity = 0
+        lex.bg = lex.fg = 99; lex.char = " ";
       }
       lex.build()
       if (lex.char == "_") lex.char = " "

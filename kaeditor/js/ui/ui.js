@@ -35,11 +35,18 @@ var ui = (function() {
   // {{{ ui.clear = new BlurredTool(clear_el)
   ui.clear = new BlurredTool(clear_el)
   ui.clear.use = function() {
-    undo.new()
-    undo.save_rect(0, 0, canvas.w, canvas.h)
-    canvas.erase()
+    undo.newUndo();
+    canvas.forEach(function(lex, x, y) {
+      undo.push(
+        brush.bg, brush.fg,
+        brush.char, brush.underline,
+        canvas, x, y);
+      lex.bg = brush.bg; lex.fg = brush.fg;
+      lex.char = " "; lex.build();
+    });
     current_filetool && current_filetool.blur()
     document.getElementById("filename_el").value = ""
+    changed = true;
   }
   // }}}
   // {{{ ui.experimental_palette = new HiddenCheckbox(experimental_palette_toggle)
@@ -153,28 +160,6 @@ var ui = (function() {
   }
   // }}}
 
-  // {{{ ui.bg = new BlurredCheckbox(bg_checkbox)
-  ui.bg = new BlurredCheckbox(bg_checkbox)
-  ui.bg.use = function(state) {
-    brush.draw_bg = state || ! brush.draw_bg
-    this.update(brush.draw_bg)
-  }
-  // }}}
-  // {{{ ui.fg = new BlurredCheckbox(fg_checkbox)
-  ui.fg = new BlurredCheckbox(fg_checkbox)
-  ui.fg.use = function(state) {
-    brush.draw_fg = state || ! brush.draw_fg
-    this.update(brush.draw_fg)
-  }
-  // }}}
-  // {{{ ui.char = new BlurredCheckbox(char_checkbox)
-  ui.char = new BlurredCheckbox(char_checkbox)
-  ui.char.use = function(state) {
-    brush.draw_char = state || ! brush.draw_char
-    this.update(brush.draw_char)
-  }
-  // }}}
-
   // {{{ ui.brush_h = new Lex(brush_h_el)
   ui.brush_h = new Lex(brush_h_el, null, defaultBg=1, defaultFg=0)
   // }}}
@@ -219,9 +204,6 @@ var ui = (function() {
     this.update(window.mirror_x);
 
     let brush_ = brush.clone();
-    brush_.draw_bg = brush.draw_bg; brush_.draw_fg = brush.draw_fg;
-    brush_.draw_char = brush.draw_char;
-
     for (let y = 0; y < brush_.h; y++) {
       for (let x = Math.trunc((brush_.w - 1) / 2); x >= 0; x--) {
         let x_ = Math.trunc(abs(x - (brush_.w - 1)));
@@ -238,9 +220,6 @@ var ui = (function() {
     this.update(window.mirror_y);
 
     let brush_ = brush.clone();
-    brush_.draw_bg = brush.draw_bg; brush_.draw_fg = brush.draw_fg;
-    brush_.draw_char = brush.draw_char;
-
     for (let y = Math.trunc((brush_.h - 1) / 2); y >= 0; y--) {
       let y_ = Math.trunc(abs(y - (brush_.h - 1)));
       [brush_.aa[y_], brush_.aa[y]] = [brush_.aa[y], brush_.aa[y_]];
@@ -252,14 +231,14 @@ var ui = (function() {
   // {{{ ui.redo = new BlurredTool(redo_el)
   ui.redo = new BlurredTool(redo_el)
   ui.redo.use = function() {
-    undo.redo()
-  }
+    undo.redo();
+  };
   // }}}
   // {{{ ui.undo = new BlurredTool(undo_el)
   ui.undo = new BlurredTool(undo_el)
   ui.undo.use = function() {
-    undo.undo()
-  }
+    undo.undo();
+  };
   // }}}
 
   // {{{ ui.rotate = new Tool(rotate_el)

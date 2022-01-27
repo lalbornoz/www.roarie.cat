@@ -33,7 +33,6 @@ var custom = (function() {
         var lex = new Lex(x, y);
         lex.bg = fromArray[y][x].bg; lex.fg = fromArray[y][x].fg;
         lex.char = fromArray[y][x].char;
-        lex.opacity = fromArray[y][x].opacity;
         lex.underline = fromArray[y][x].underline;
         lex.build();
         lex.span.style.maxWidth = "8px";
@@ -50,10 +49,9 @@ var custom = (function() {
         if (x < json.lines[y].length) {
           lex.bg = json.lines[y][x].bg; lex.fg = json.lines[y][x].fg
           lex.char = String.fromCharCode(json.lines[y][x].value)
-          lex.opacity = 1
           lex.underline = json.lines[y][x].u
         } else {
-          lex.bg = 99; lex.char = " "; lex.fg = 99; lex.opacity = 0; lex.underline = false
+          lex.bg = 99; lex.char = " "; lex.fg = 99; lex.underline = false
         }
 
         lex.build()
@@ -84,7 +82,6 @@ var custom = (function() {
             "bg":new_brush.aa[y][x].bg,
             "char":new_brush.aa[y][x].char,
             "fg":new_brush.aa[y][x].fg,
-            "opacity":new_brush.aa[y][x].opacity,
             "underline":new_brush.aa[y][x].underline,
           };
         };

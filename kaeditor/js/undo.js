@@ -1,258 +1,123 @@
 var undo = (function() {
-  // {{{ XXX original comments
-  // state is an undo or redo state that might contain these props
-  // {  lexs: {'0,0': LexState, ...},    // for sparse lex changes (eg brush, fill)
-  //    focus: {x:, y: },
-  //    size: {w:, h: },
-  //    rects: [{x:, y:, w:, h:, lexs: [LexState, ...]}, ...]
-  // }
-  //
+  let
+      diffLevel = 0,
+      diffMax = 256 ** 1024,  // ~17M w/o list overhead = 256K * ~68 bytes ((4 * 8) + (1 * (4 * 8)) + (1 * 4))
+      diffStack = [],
+      exports = {};
 
-  //
-  // the reason for stringifying the x y coords is so that each
-  // coordinate is saved only once in an undo state.
-  // otherwise there would be problems with, eg, a brush stroke
-  // that passed over the same grid cell twice.
-  //
+  // {{{ function undoCell(diffCell, redo)
+  function undoCell(diffCell, redo) {
+    let
+        x = diffCell[0],
+        y = diffCell[1];
+
+    canvas.aa[y][x].bg += (redo ? (diffCell[2] * -1) : diffCell[2]);
+    canvas.aa[y][x].fg += (redo ? (diffCell[3] * -1) : diffCell[3]);
+    canvas.aa[y][x].char = (redo ? diffCell[5] : diffCell[4]);
+    canvas.aa[y][x].underline = (redo ? diffCell[7] : diffCell[6]);
+    canvas.aa[y][x].build();
+  };
   // }}}
 
-  var current_undo = null;
-  var dom = {undo: undo_el, redo: redo_el};
-  var exports = {}
-  var max_states = 200;
-  var stack = {undo: [], redo: []};
+  // {{{ let newUndo = function()
+  let newUndo = function() {
+    if (diffLevel > 0) {
+      diffStack.splice(diffStack.length - diffLevel);
+      diffLevel = 0;
+    };
+    if (diffStack.length >= diffMax) {
+      diffStack.splice(0, ((diffMax - diffStack.length) + 1));
+    };
 
-  // {{{ var new_redo = function()
-  var new_redo = function() {
-    return new_state()
-  }
+    diffStack.push([]);
+  };
   // }}}
-  // {{{ var new_state = function()
-  var new_state = function() {
-    var state = {lexs:{}};
-    save_focus(canvas.focus_x, canvas.focus_y, state)
-    return state
-  }
-  // }}}
-  // {{{ var new_undo = function()
-  var new_undo = function() {
-    current_undo = new_state()
-    stack.redo = []
-    stack.undo.push(current_undo)
-    if (stack.undo.length > max_states) stack.undo.shift();
-    update_dom()
-    return current_undo
-  }
-  // }}}
-  // {{{ var restore_state = function(state)
-  var restore_state = function(state) {
-    // all redo states will have a cached undo state on them
-    // an undo state might have a cached redo state
-    // if it doesn't have one, generate one
-    var make_redo = ! ('redo' in state || 'undo' in state);
-    var aa = canvas.aa
-    var lex, lexs;
+  // {{{ let push = function(newBg, newFg, newChar, newUnderline, canvas, canvasX, canvasY)
+  let push = function(newBg, newFg, newChar, newUnderline, canvas, canvasX, canvasY) {
+    let
+        canvasCell = canvas.aa[canvasY][canvasX],
+        diffIdx = diffStack.length - 1;
 
-    if (make_redo) {
-      state.redo = new_redo()
+    if (!(diffIdx >= 0)) {
+      console.assert(false, "diffIdx >= 0");
+      return false;
+    } else {
+      diffStack[diffIdx].push([
+        canvasX, canvasY,
+        canvasCell.bg - newBg,
+        canvasCell.fg - newFg,
+        canvasCell.char, newChar,
+        canvasCell.underline, newUnderline,
+      ]);
+    };
+  };
+  // }}}
+  // {{{ let resize = function(newHeight, newWidth, canvas)
+  let resize = function(newHeight, newWidth, canvas) {
+    newUndo();
+    let
+        diffIdx = diffStack.length - 1;
 
-      // copy saved rects that intersect with current canvas size
-      // important to do this before resizing canvas
-      if ('rects' in state) {
-        for (var ri=0, rect; rect=state.rects[ri]; ri++) {
-          if (rect.x >= canvas.w ||
-              rect.y >= canvas.h) continue;
-          var w = Math.min(rect.w, canvas.w - rect.x)
-          var h = Math.min(rect.h, canvas.h - rect.y)
-          save_rect(rect.x, rect.y, w, h, state.redo)
-        }
-      }
-      if ('size' in state) {
-        save_resize(state.size.w, state.size.h, canvas.w, canvas.h, state.redo)
-      }
-    }
+    if (!(diffIdx >= 0)) {
+      console.assert(false, "diffIdx >= 0");
+      return false;
+    } else {
+      diffStack[diffIdx].push([
+        "resize",
+        canvas.h, newHeight,
+        canvas.w, newWidth,
+      ]);
+    };
+  };
+  // }}}
+  // {{{ let undo = function(canvas, redo=false)
+  let undo = function(canvas, redo=false) {
+    if (diffStack.length === 0) {
+      return false;
+    } else if (!(diffLevel <= diffStack.length)) {
+      console.assert(false, "diffLevel <= diffStack.length");
+      diffLevel = diffStack.length;
+      return false;
+    } else if ((!redo && (diffLevel === diffStack.length)) || (redo && (diffLevel <= 0))) {
+      return false;
+    } else {
+      let
+          diffOffset = redo
+            ? (diffLevel - 1)
+            :  diffLevel,
+          diffStack_ = diffStack[diffStack.length - diffOffset - 1];
 
-    if ('size' in state) {
-      canvas.resize(state.size.w, state.size.h, true);
-    }
+      if (!redo) {
+        if (diffStack_[0][0] === "resize") {
+          // XXX restore cells
+          canvas.resize(diffStack_[0][3], diffStack_[0][1], true);
+        } else {
+          diffStack_.reduceRight((_, diffCell) => undoCell(diffCell, redo), null);
+        };
+      } else {
+        if (diffStack_[0][0] === "resize") {
+          // XXX restore cells
+          canvas.resize(diffStack_[0][4], diffStack_[0][2], true);
+        } else {
+          diffStack_.forEach(function(diffCell) { undoCell(diffCell, redo); });
+        };
+      };
 
-    if ('rects' in state) {
-      for (var ri=0, rect; rect=state.rects[ri]; ri++) {
-        lexs = rect.lexs
-        for (var li=0; lex=lexs[li]; li++) {
-          var x = (li % rect.w) + rect.x
-          var y = ((li / rect.w)|0) + rect.y
-          aa[y][x].assign(lex)
-        }
-      }
-    }
-
-    lexs = state.lexs
-    for (var key in lexs) {
-      var xy = key.split(',');
-      lex = aa[xy[1]][xy[0]]
-      if (make_redo)
-        save_lex(xy[0], xy[1], lex, state.redo)
-      lex.assign(lexs[key])
-    }
-
-    if ('focus' in state) {
-      canvas.focus_x = state.focus.x
-      canvas.focus_y = state.focus.y
-      if (current_canvas === canvas) {
-        canvas.focus()
-      }
-    }
-  }
-  // }}}
-  // {{{ var save_focus = function(x, y, state)
-  var save_focus = function(x, y, state) {
-    state = state || current_undo
-    state.focus = {x:x, y:y}
-  }
-  // }}}
-  // {{{ var save_focused_lex = function(state)
-  var save_focused_lex = function(state) {
-    state = state || current_undo
-    var x = canvas.focus_x
-    var y = canvas.focus_y
-    save_lex(x, y, canvas.aa[y][x], state)
-  }
-  // }}}
-  // {{{ var save_lex = function(x, y, lex, state)
-  var save_lex = function(x, y, lex, state) {
-    // var start = Date.now()
-    state = state || current_undo
-    var lexs = state.lexs;
-    var xy = x + "," + y;
-    if (xy in lexs) return;
-    lexs[xy] = new LexState(lex)
-    // undotimetotal += Date.now() - start
-  }
-  // }}}
-  // {{{ var save_rect = function(xpos, ypos, w, h, state)
-  var save_rect = function(xpos, ypos, w, h, state) {
-    if (w === 0 || h === 0) return;
-    state = state || current_undo;
-    state.rects = state.rects || []
-    var aa = canvas.aa;
-    var rect = {x: xpos, y: ypos, w: w, h: h, lexs: []}
-    var lexs = rect.lexs
-    var xlen = xpos + w
-    var ylen = ypos + h
-    for (var y = ypos; y < ylen; y++) {
-      var aay = aa[y]
-      for (var x = xpos; x < xlen; x++) {
-        lexs.push(new LexState(aay[x]))
-      }
-    }
-    state.rects.push(rect)
-  }
-  // }}}
-  // {{{ var save_resize = function(w, h, old_w, old_h, state)
-  var save_resize = function(w, h, old_w, old_h, state) {
-    state = state || current_undo
-    save_size(old_w, old_h, state)
-    if (old_w > w) {
-      // .---XX
-      // |   XX
-      // |___XX
-      save_rect(w, 0, old_w - w, old_h, state)
-      if (old_h > h) {
-        // .----.
-        // |    |
-        // XXXX_|
-        save_rect(0, h, w, old_h - h, state)
-      }
-    } else if (old_h > h) {
-      // .----.
-      // |    |
-      // XXXXXX
-      save_rect(0, h, old_w, old_h - h, state)
-    }
-  }
-  // }}}
-  // {{{ var save_size = function(w, h, state)
-  var save_size = function(w, h, state) {
-    state = state || current_undo
-    state.size = {w:w, h:h};
-  }
-  // }}}
-  // {{{ var update_dom_visibility = function(type)
-  var update_dom_visibility = function(type) {
-    var el = dom[type]
-    if (el.is_visible) {
-      if (stack[type].length === 0) {
-        el.classList.add('hidden')
-        el.is_visible = false
-      }
-    } else if (stack[type].length > 0) {
-      el.classList.remove('hidden')
-      el.is_visible = true
-    }
-  }
-  // }}}
-  // {{{ var update_dom = function()
-  var update_dom = function() {
-    update_dom_visibility('undo')
-    update_dom_visibility('redo')
-  }
-  // }}}
-  // {{{ var LexState = function(lex)
-  var LexState = function(lex) {
-    this.fg = lex.fg;
-    this.bg = lex.bg;
-    this.char = lex.char;
-    this.opacity = lex.opacity;
-  }
+      diffLevel = redo
+        ? max(diffLevel - 1, -1)
+        : min(diffLevel + 1, diffStack.length);
+    };
+  };
   // }}}
 
-  // {{{ var redo = function()
-  var redo = function() {
-    var state = stack.redo.pop();
-    if (!state) return;
+  exports.newUndo = newUndo;
+  exports.push = push;
+  exports.redo = function(canvas) { undo(canvas, redo=true); };
+  exports.resize = resize;
+  exports.undo = undo;
 
-    restore_state(state)
-
-    state.undo.redo = state
-    stack.undo.push(state.undo)
-    delete state.undo
-
-    update_dom()
-  }
-  // }}}
-  // {{{ var undo = function()
-  var undo = function() {
-    var state = stack.undo.pop();
-    if (!state) return;
-
-    restore_state(state)
-
-    // now take the applied undo state and store it on the redo state
-    // and push the redo state to the redo stack
-    state.redo.undo = state
-    stack.redo.push(state.redo)
-    delete state.redo
-
-    update_dom()
-  }
-  // }}}
-
-  dom.undo.is_visible = dom.redo.is_visible = false
-
-  exports.stack = stack
-  exports.new = new_undo
-  exports.save_focus = save_focus
-  exports.save_size = save_size
-  exports.save_lex = save_lex
-  exports.save_focused_lex = save_focused_lex
-  exports.save_rect = save_rect
-  exports.save_resize = save_resize
-  exports.undo = undo
-  exports.redo = redo
-
-  return exports
-})()
+  return exports;
+})();
 
 /*
  * vim:expandtab sw=2 ts=2 tw=0

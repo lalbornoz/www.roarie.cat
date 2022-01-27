@@ -186,8 +186,6 @@ function bind() {
     if (is_desktop) cursor_input.focus()
     if (selecting) {
       selection.up(e)
-    } else if (transforming) {
-      transform.up(e)
     }
   })
   // }}}
@@ -209,7 +207,7 @@ function bind() {
 
 function build() {
   canvas.append(canvas_wrapper); brush.append(brush_wrapper);
-  brush.bg = 99; brush.fg = 10; brush.opacity = 1
+  brush.bg = 99; brush.fg = 10;
   palette.append(palette_wrapper)
   letters.append(letters_wrapper); letters.repaint("Basic Latin")
 

@@ -78,9 +78,7 @@ var brush = (function() {
 
   brush.bg = 1; brush.fg = 0;
   brush.char = " "; brush.underline = false;
-  brush.draw_bg = brush.draw_fg = true; brush.draw_char = true;
   brush.mask = ui.circle;
-  brush.opacity = 1;
   brush.max = 100; brush.min = 1;
   brush.modified = false
 

@@ -8,14 +8,13 @@ function Lex(x, y, defaultBg=99, defaultFg=10) {
   this.bg = defaultBg; this.fg = defaultFg;
   this.char = " "; this.underline = false;
   this.defaultBg = defaultBg; this.defaultFg = defaultFg;
-  this.opacity = 1; this.focused = false;
+  this.focused = false;
 };
 
 // {{{ Lex.prototype.assign = function(lex)
 Lex.prototype.assign = function(lex) {
   this.bg = lex.bg; this.fg = lex.fg;
   this.char = lex.char; this.underline = lex.underline;
-  this.opacity = lex.opacity;
   this.build();
 };
 // }}}
@@ -48,7 +47,6 @@ Lex.prototype.key = function(char, keyCode) {
 Lex.prototype.clear = function() {
   this.bg = colors.black; this.fg = 0;
   this.char = " "; this.underline = false;
-  this.opacity = 0;
   this.build();
 };
 // }}}
@@ -63,31 +61,12 @@ Lex.prototype.demolish = function() {
   this.span = null;
 };
 // }}}
-// {{{ Lex.prototype.erase = function()
-Lex.prototype.erase = function() {
-  this.bg = brush.bg; this.fg = brush.fg;
-  this.char = " "; this.opacity = 1;
-  this.build();
-};
-// }}}
 // {{{ Lex.prototype.sanitize = function()
 Lex.prototype.sanitize = function() {
   switch (this.char) {
     case undefined:
     case "":  return " ";
     default:  return this.char;
-  };
-};
-// }}}
-// {{{ Lex.prototype.stamp = function(lex, brush)
-Lex.prototype.stamp = function(lex, brush) {
-  if (!((((lex.bg === 99) && (lex.char === " "))) || ((lex.bg === 99) && (lex.fg === 99)))) {
-    if (brush.draw_bg) this.bg = lex.bg;
-    if (brush.draw_fg) this.fg = lex.fg;
-    if (brush.draw_char) this.char = lex.char;
-    this.opacity = lex.opacity;
-    this.underline = lex.underline;
-    this.build();
   };
 };
 // }}}

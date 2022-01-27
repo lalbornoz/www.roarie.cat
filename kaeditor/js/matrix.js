@@ -179,11 +179,6 @@ Matrix.prototype.demolish = function() {
   this.aa.length = 0;
 };
 // }}}
-// {{{ Matrix.prototype.erase = function()
-Matrix.prototype.erase = function() {
-  this.forEach(function(lex, x, y) { lex.erase(); });
-};
-// }}}
 
 // {{{ Matrix.prototype.forEach = function(f)
 Matrix.prototype.forEach = function(f) {
